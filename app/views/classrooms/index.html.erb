@@ -1,0 +1,24 @@
+<h1>Classrooms</h1>
+<%= link_to 'New Classroom', new_classroom_path %>
+<table>
+  <thead>
+    <tr>
+      <th>Nama</th>
+      <th>Level</th>
+      <th>Gender</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @classrooms.each do |classroom| %>
+      <tr>
+        <td><%= classroom.name %></td>
+        <td><%= classroom.level.name %></td>
+        <td><%= classroom.gender.name %></td>
+        <td><%= link_to 'Show', classroom_path(classroom) %></td>
+        <td><%= link_to 'Edit', edit_classroom_path(classroom) %></td>
+        <td><%= button_to 'Delete', classroom_path(classroom), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

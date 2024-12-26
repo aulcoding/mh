@@ -1,0 +1,74 @@
+<div class="flex flex-col justify-center items-center min-h-screen bg-gray-800 p-4">
+  <div class="p-4 rounded-md w-full max-w-md bg-gray-700 shadow-md">
+    <h1 class="text-2xl text-white font-semibold mb-4 text-center">Penempatan Siswa</h1>
+
+    <%= form_with model: @classroom_student, url: classroom_students_path, local: true, class: "space-y-6" do |form| %>
+      <!-- Classroom Dropdown -->
+      <div class="form-control">
+        <%= form.label :classroom_id, "Kelas", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.collection_select :classroom_id, @classrooms, :id, :name, { prompt: "Pilih Kelas" },
+              { class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+      </div>
+
+      <!-- Student Dropdown -->
+      <div class="form-control">
+        <%= form.label :student_id, "Santri", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.select :student_id, [], { prompt: "Pilih Santri" },
+              { class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+      </div>
+
+      <!-- Year Dropdown -->
+      <div class="form-control">
+        <%= form.label :year, "Tahun", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.collection_select :year, (2024..2030).to_a, :to_s, :to_s, { prompt: "Pilih Tahun" },
+              { class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+      </div>
+
+      <!-- Semester Dropdown -->
+      <div class="form-control">
+        <%= form.label :semester, "Semester", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.collection_select :semester, [1, 2], :to_s, :to_s, { prompt: "Plih Semester" },
+              { class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <%= form.submit "Selesai", class: "btn w-full bg-slate-100 hover:bg-slate-300 text-neutral-700 py-2 px-4 rounded-lg font-semibold" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    console.log("jalan");
+
+    const classroomSelect = document.getElementById("classroom_student_classroom_id");
+    const studentSelect = document.getElementById("classroom_student_student_id");
+    console.log(classroomSelect.value);
+
+    classroomSelect.addEventListener("change", () => {
+      const classroomId = classroomSelect.value;
+
+      console.log("Classroom changed:", classroomSelect.value);
+
+      if (!classroomId) {
+        studentSelect.innerHTML = '<option value="">Choose a student</option>';
+        return;
+      }
+
+      fetch(`/classroom_students/students_by_classroom?classroom_id=${classroomId}`)
+        .then(response => response.json())
+        .then(data => {
+          studentSelect.innerHTML = '<option value="">Choose a student</option>';
+          data.students.forEach(student => {
+            const option = document.createElement("option");
+            option.value = student.id;
+            option.textContent = student.name;
+            studentSelect.appendChild(option);
+          });
+        });
+    });
+  });
+</script>

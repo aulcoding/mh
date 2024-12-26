@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: classroom_students
+#
+#  id           :integer          not null, primary key
+#  year         :integer
+#  semester     :integer
+#  classroom_id :integer          not null
+#  student_id   :integer          not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
+
+one:
+  year: 1
+  semester: 1
+  classroom: one
+  student: one
+
+two:
+  year: 1
+  semester: 1
+  classroom: two
+  student: two

@@ -1,0 +1,71 @@
+<h1>Edit Classroom Student</h1>
+
+<%= form_with model: @classroom_student, local: true do |form| %>
+  <div>
+    <%= form.label :classroom_id, "Select Classroom" %>
+    <%= form.collection_select :classroom_id, @classrooms, :id, :name, { prompt: "Choose a classroom" }, { id: "classroom-select" } %>
+  </div>
+
+  <div>
+    <%= form.label :student_id, "Select Student" %>
+    <%= form.select :student_id, options_for_select(@students.map { |s| [s.name, s.id] }, @classroom_student.student_id), prompt: "Choose a student", id: "student_id" %>
+  </div>
+
+  <div>
+    <%= form.label :year %>
+    <%= form.select :year, (2024..2030).to_a, selected: @classroom_student.year %>
+  </div>
+
+  <div>
+    <%= form.label :semester %>
+    <%= form.select :semester, [1, 2], { prompt: "Choose semester" }, selected: @classroom_student.semester %>
+  </div>
+
+  <div>
+    <%= form.submit "Update Student" %>
+  </div>
+<% end %>
+
+<%= link_to "Back to List", classroom_students_path %>
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    const classroomSelect = document.getElementById("classroom-select");
+    const studentSelect = document.getElementById("student_id");
+
+    // Pre-populate students if a classroom is already selected
+    if (classroomSelect.value) {
+      fetchStudents(classroomSelect.value, <%= @classroom_student.student_id %>);
+    }
+
+    classroomSelect.addEventListener("change", () => {
+      const classroomId = classroomSelect.value;
+
+      if (!classroomId) {
+        studentSelect.innerHTML = '<option value="">Choose a student</option>';
+        return;
+      }
+
+      fetchStudents(classroomId);
+    });
+
+    function fetchStudents(classroomId, selectedStudentId = null) {
+      fetch(`/classroom_students/students_by_classroom?classroom_id=${classroomId}`)
+        .then(response => response.json())
+        .then(data => {
+          studentSelect.innerHTML = '<option value="">Choose a student</option>';
+          data.students.forEach(student => {
+            const option = document.createElement("option");
+            option.value = student.id;
+            option.textContent = student.name;
+
+            if (selectedStudentId && student.id === selectedStudentId) {
+              option.selected = true;
+            }
+
+            studentSelect.appendChild(option);
+          });
+        });
+    }
+  });
+</script>

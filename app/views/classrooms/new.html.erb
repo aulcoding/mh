@@ -1,0 +1,48 @@
+<div class="flex flex-col justify-center items-center min-h-screen bg-gray-800 p-4">
+  <div class="p-4 rounded-md w-full max-w-md bg-gray-700 shadow-md">
+    <h1 class="text-2xl text-white font-semibold mb-4 text-center">New Classroom</h1>
+
+    <%= form_with(model: @classroom, local: true, class: "space-y-6") do |form| %>
+      <% if @classroom.errors.any? %>
+        <div id="error_explanation" class="mb-4 p-2 bg-red-600 text-white rounded-md">
+          <h2 class="text-sm font-semibold mb-2"><%= pluralize(@classroom.errors.count, "error") %> prohibited this classroom from being saved:</h2>
+          <ul class="list-disc list-inside text-sm">
+            <% @classroom.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <!-- Name Field -->
+      <div class="form-control">
+        <%= form.label :name, "Name", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.text_field :name, class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+
+      <!-- Level Dropdown -->
+      <div class="form-control">
+        <%= form.label :level_id, "Level", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.collection_select :level_id, Level.all, :id, :name, { prompt: "Select Level" },
+              { class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+      </div>
+
+      <!-- Gender Dropdown -->
+      <div class="form-control">
+        <%= form.label :gender_id, "Gender", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.collection_select :gender_id, Gender.all, :id, :name, { prompt: "Select Gender" },
+              { class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <%= form.submit "Save Classroom", class: "btn w-full bg-slate-100 hover:bg-slate-300 text-neutral-700 py-2 px-4 rounded-lg font-medium" %>
+      </div>
+    <% end %>
+
+    <!-- Back Link -->
+    <div class="mt-4 text-center">
+      <%= link_to 'Back', classrooms_path, class: "text-blue-400 hover:text-blue-300 text-sm font-medium" %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<h1 class="text-3xl font-bold text-center text-white mt-4 mb-6">Update Santri</h1>
+
+<%= form_with(model: @student, local: true, class: "max-w-lg mx-auto bg-gray-800 p-6 rounded-lg shadow-lg text-white") do |form| %>
+  <% if @student.errors.any? %>
+    <div id="error_explanation" class="mb-4 p-4 border border-red-500 bg-red-100 text-red-700 rounded">
+      <h2 class="font-bold text-lg mb-2"><%= pluralize(@student.errors.count, "error") %> prohibited this student from being saved:</h2>
+      <ul class="list-disc pl-5">
+        <% @student.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Name Field -->
+  <div class="form-control w-full max-w-xs mb-4">
+    <%= form.label :name, "Nama", class: "label text-white" %>
+    <%= form.text_field :name, class: "input input-bordered w-full bg-gray-700 text-white placeholder-gray-400" %>
+  </div>
+
+  <!-- Nickname Field -->
+  <div class="form-control w-full max-w-xs mb-4">
+    <%= form.label :nickname, "Panggilan", class: "label text-white" %>
+    <%= form.text_field :nickname, class: "input input-bordered w-full bg-gray-700 text-white placeholder-gray-400" %>
+  </div>
+
+  <!-- Gender Field -->
+  <div class="form-control w-full max-w-xs mb-4">
+    <%= form.label :gender_id, "Jenis Kelamin", class: "label text-white" %>
+    <%= form.collection_select :gender_id, Gender.all, :id, :name, {}, class: "select select-bordered w-full bg-gray-700 text-white" %>
+  </div>
+
+  <!-- Birthdate Field -->
+  <div class="form-control w-full max-w-xs mb-4">
+    <%= form.label :birthdate, "Tanggal Lahir", class: "label text-white" %>
+    <%= form.date_field :birthdate, class: "input input-bordered w-full bg-gray-700 text-white" %>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="form-control mt-4">
+    <%= form.submit "Update Murid", class: "btn btn-primary bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg w-full" %>
+  </div>
+<% end %>

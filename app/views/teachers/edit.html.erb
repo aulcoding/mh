@@ -1,0 +1,35 @@
+<h1 class="text-3xl font-bold text-center text-white mb-6">Edit Teacher</h1>
+
+<%= form_with(model: @teacher, local: true) do |form| %>
+  <% if @teacher.errors.any? %>
+    <div id="error_explanation" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+      <h2 class="font-bold text-lg"><%= pluralize(@teacher.errors.count, "error") %> prohibited this teacher from being saved:</h2>
+      <ul class="mt-2 list-disc list-inside">
+        <% @teacher.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+  <div class="w-5/6 mx-auto">
+    <!-- Name Field -->
+    <div class="form-control w-full max-w-xs mb-4">
+      <%= form.label :name, "Name", class: "label" %>
+      <%= form.text_field :name, class: "input input-bordered w-full" %>
+    </div>
+
+    <!-- Gender Field -->
+    <div class="form-control w-full max-w-xs mb-4">
+      <%= form.label :gender_id, "Gender", class: "label" %>
+      <%= form.collection_select :gender_id, Gender.all, :id, :name, { prompt: "Select gender" }, class: "select select-bordered w-full" %>
+    </div>
+
+    <!-- Centered Buttons -->
+    <div class="flex justify-center mt-6">
+      <%= form.submit "Update", class: "btn btn-primary bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg" %>
+      <%= link_to 'Kembali', teachers_path, class: "btn bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg ml-2" %>
+    </div>
+  </div>
+<% end %>

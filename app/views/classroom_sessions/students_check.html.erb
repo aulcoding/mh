@@ -1,0 +1,85 @@
+<%= form_with model: @classroom_session, url: classroom_sessions_path, local: true do |form| %>
+<div>
+  <%= form.label :year, "Tahun" %>
+  <%= form.select :year, (2024..2027).to_a, prompt: "Pilih tahun" %>
+</div>
+
+<div>
+  <%= form.label :semester, "Semester" %>
+  <%= form.select :semester, [1,2], prompt: "Pilih semester" %>
+</div>
+
+<div>
+  <%= form.label :date, "Tanggal" %>
+  <%= form.date_field :date %>
+</div>
+
+<div>
+  <%= form.label :teacher_id, "Guru" %>
+  <%= form.collection_select :teacher_id, @teachers, :id, :name, prompt: "Pilih Guru" %>
+</div>
+
+<!-- Show classroom student -->
+<div>
+  <%= form.label :classroom_student_id, "Pilih kelas" %>
+  <%= form.collection_select :classroom_id, @classrooms, :id, :name, prompt: "Pilih Kelas" %>
+
+</div>
+
+<div>
+  <div id="student-list">
+
+  </div>
+</div>
+
+
+
+<% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+    const yearSelect = document.getElementById("classroom_session_year")
+    const semesterSelect = document.getElementById("classroom_session_semester")
+    const classroomSelect = document.getElementById("classroom_session_classroom_id")
+    const studentList = document.getElementById("student-list")
+    console.log(studentList);
+
+    classroomSelect.addEventListener("change", () => {
+      const year = yearSelect.value
+      const semester = semesterSelect.value
+      const classroomId = classroomSelect.value
+
+      if (!year || !semester || !classroomId) {
+      studentList.innerHTML = "<li>Please select year, semester, and classroom.</li>";
+      return;
+    }
+
+    fetch(`/classroom_sessions/students_by_year_and_semester?classroom_id=${classroomId}&year=${year}&semester=${semester}`)
+      .then(response => response.json())
+      .then(data => {
+
+        // Clear the existing list
+        studentList.innerHTML = "";
+
+        // Populate the student list
+        if (data.students.length > 0) {
+          data.students.forEach(student => {
+            const studentRow = document.createElement("div");
+            studentRow.textContent = student.name;
+            studentList.appendChild(studentRow);
+          });
+        } else {
+          studentList.innerHTML = "<div>Kelas ini tidak memiliki murid.</div>";
+        }
+      })
+      .catch(error => {
+        console.error("Error fetching students:", error);
+        studentList.innerHTML = "<div>Failed to load students. Please try again.</div>";
+      });
+
+    })
+  })
+
+
+</script>

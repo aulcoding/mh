@@ -1,0 +1,57 @@
+<h1 class="text-3xl font-bold text-center text-white mb-6 mt-6">Buat Santri</h1>
+
+<!--  class: "w-full max-w-lg mx-auto bg-gray-700 p-6 rounded-lg space-y-4 shadow-md" -->
+
+<%= form_with(model: @student, local: true) do |form| %>
+
+  <% if @student.errors.any? %>
+    <div id="error_explanation" class="bg-red-700 text-white p-4 rounded-lg mb-4">
+      <h2 class="text-xl font-bold mb-2">
+        <%= pluralize(@student.errors.count, "error") %> prohibited this student from being saved:
+      </h2>
+      <ul class="list-disc pl-5 space-y-1">
+        <% @student.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="w-5/6 mx-auto">
+
+      <!-- Name Field -->
+      <div class="form-control w-full max-w-xs mb-4">
+        <%= form.label :name, "Nama Lengkap", class: "label text-xs" %>
+        <%= form.text_field :name, placeholder: "Masukkan nama lengkap santri", class: "input input-bordered w-full rounded-lg py-2 px-3 text-xs" %>
+      </div>
+
+      <!-- Nickname Field -->
+      <div class="form-control w-full max-w-xs mb-4">
+        <%= form.label :nickname, "Nama Panggilan", class: "label text-xs" %>
+        <%= form.text_field :nickname, placeholder: "Masukkan nama panggilan santri", class: "input input-bordered w-full rounded-lg py-2 px-3 text-xs" %>
+      </div>
+
+      <!-- Gender Dropdown -->
+      <div class="form-control w-full max-w-xs mb-4">
+        <%= form.label :gender_id, "Jenis Kelamin", class: "label text-xs" %>
+        <%= form.collection_select :gender_id, Gender.all, :id, :name, { prompt: "Pilih Jenis Kelamin" },
+              class: "select select-bordered w-full rounded-lg text-white py-2 px-3 text-xs" %>
+      </div>
+
+      <!-- Birthdate Field -->
+      <div class="form-control w-full max-w-xs mb-4">
+        <%= form.label :birthdate, "Tanggal Lahir", class: "label text-gray-300 font-medium mb-1 text-xs" %>
+        <%= form.date_field :birthdate, class: "input input-bordered w-full rounded-lg py-2 px-3 text-xs" %>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-control w-full my-6">
+        <%= form.submit "Simpan", class: "btn btn-primary w-full bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded-lg" %>
+      </div>
+
+  </div>
+
+<% end %>
+
+
+

@@ -1,0 +1,93 @@
+<h1 class="text-3xl font-bold text-center text-white pt-6 mb-6">Edit Classroom Session</h1>
+
+<%= form_with(model: @classroom_session, local: true, class: "w-5/6 max-w-md mx-auto bg-gray-700 py-1 px-4 rounded-lg space-y-2 shadow-md") do |form| %>
+  <!-- Date Field -->
+  <div class="form-control w-full">
+    <%= form.label :session_date, "Tanggal", class: "label text-gray-300 font-medium mb-1" %>
+    <%= form.date_field :session_date, order: [:year, :month, :day], prefix: :session_date,
+          class: "input input-bordered w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+  </div>
+
+  <!-- Classroom Dropdown -->
+  <div class="form-control w-full">
+    <%= form.label :classroom_id, "Kelas", class: "label text-gray-300 font-medium mb-1" %>
+    <%= form.collection_select :classroom_id, @classrooms, :id, :name, { prompt: "Pilih Kelas" },
+          class: "select select-bordered w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+  </div>
+
+  <!-- Submit Button -->
+  <!-- <div class="form-control w-full"> -->
+    <%# form.submit "Update", class: "btn btn-primary w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg" %>
+  <!-- </div> -->
+<% end %>
+
+<!-- Student List Section -->
+<div id="student_list" class="w-5/6 max-w-3xl mx-auto bg-gray-700 p-6 rounded-lg mt-6 shadow-md">
+  <h2 class="text-xl font-bold text-gray-300 mb-4">Daftar Capaian</h2>
+  <div id="students" class="space-y-2">
+    <!-- Dynamically populated student list -->
+  </div>
+</div>
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    const dateSelect = document.getElementById("classroom_session_session_date");
+    const classSelect = document.getElementById("classroom_session_classroom_id");
+    const studentList = document.getElementById("students");
+
+    const updateStudentList = () => {
+      const classroomId = classSelect.value;
+      const dateValue = dateSelect.value;
+
+      // Exit if required fields are not filled
+      if (!classroomId || !dateValue) return;
+
+      // Fetch students for the selected classroom and date
+      fetch(`/classroom_sessions/students_edit?classroom_id=${classroomId}&date=${dateValue}`)
+        .then((response) => response.json())
+        .then((data) => {
+          studentList.innerHTML = ""; // Clear the student list
+
+          if (data.length === 0) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.textContent = "No students found for the selected classroom and date.";
+            emptyMessage.className = "text-gray-400 italic";
+            studentList.appendChild(emptyMessage);
+            return;
+          }
+
+          // Populate the student list with the fetched data
+          data.forEach((session) => {
+            const classroomSessionId = session.id; // Classroom session ID
+            const student = session.classroom_student.student;
+
+            // Create a container for each student
+            const studentContainer = document.createElement("div");
+            studentContainer.className = "flex justify-between items-center bg-gray-800 p-3 rounded-lg";
+
+            // Student details
+            const studentDetails = document.createElement("span");
+            studentDetails.textContent = `${student.name}`;
+            studentDetails.className = "text-gray-300";
+
+            // Edit link
+            const editLink = document.createElement("a");
+            editLink.href = `/classroom_sessions/${classroomSessionId}/edit`;
+            editLink.textContent = "Edit";
+            editLink.className = "btn btn-sm bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded-lg";
+
+            studentContainer.appendChild(studentDetails);
+            studentContainer.appendChild(editLink);
+            studentList.appendChild(studentContainer);
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching students:", error);
+        });
+    };
+
+    // Attach event listeners to classroom and date inputs
+    dateSelect.addEventListener("change", updateStudentList);
+    classSelect.addEventListener("change", updateStudentList);
+  });
+</script>

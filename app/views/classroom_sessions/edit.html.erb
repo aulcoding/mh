@@ -1,0 +1,175 @@
+<h1>Update Classroom Session</h1>
+
+<%= form_with(model: @classroom_session, local: true) do |form| %>
+
+<%# debug(@classroom_session) %>
+<div>
+  <!-- Use radio buttons to control collapses -->
+
+  <div class="s">
+
+    <%# form.hidden_field "classroom_student_id", value: classroom_session.classroom_student_id %>
+    <%# form.hidden_field "teacher_id", value: classroom_session.teacher_id %>
+    <%# form.hidden_field "session_date", value: classroom_session.session_date %>
+    <%# form.hidden_field "year", value: classroom_session.year %>
+    <%# form.hidden_field "semester", value: classroom_session.semester %>
+
+    <div class="form-control w-full max-w-xs mb-4">
+      <%= form.label :year, "Tahun", class: "label" %>
+      <%= form.text_field :year, class: "input input-bordered w-full" %>
+      </div>
+      <div class="form-control w-full max-w-xs mb-4">
+        <%= form.label :semester, "Semester", class: "label" %>
+        <%= form.text_field :semester, class: "input input-bordered w-full" %>
+      </div>
+      <div class="form-control w-full max-w-xs mb-4">
+        <%= form.label :session_date, "Tanggal", class: "label" %>
+        <%= form.date_field :session_date, class: "input input-bordered w-full" %>
+      </div>
+
+      <!-- Attendance Fields -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="form-control">
+          <%= form.label "attendance_status_id", "Attendance Status", class: "label" %>
+          <%= form.collection_select "attendance_status_id", @attendance_statuses, :id, :name,
+          { prompt: "Pilih Kehadiran" }, class: "select select-bordered w-full" %>
+        </div>
+
+        <div class="form-control">
+          <%= form.label "attendance_remarks", "Remarks", class: "label" %>
+          <%= form.text_field "attendance_remarks", class: "input input-bordered w-full" %>
+        </div>
+      </div>
+      <!-- Ziyadah -->
+      <div class="form-control">
+        <%= form.label :ziyadahSurah, "Ziyadah", class: "label" %>
+        <%= form.collection_select "ziyadahSurah", @surahs, :id, :name,
+          { prompt: "Pilih Surat", selected: @ziyadahSurah&.id }, class: "select select-bordered w-full" %>
+      </div>
+
+
+      <div class="form-control">
+        <%= form.label :ziyadah_id, "Ayat", class: "label" %>
+        <%= form.select :ziyadah_id, @ziyadahSurah&.children&.map { |verse| [verse.name, verse.id] },
+          { prompt: "Pilih Ayat", selected: @ziyadah }, class: "select select-bordered w-full" %>
+      </div>
+
+      <!-- Murajaah -->
+      <div class="form-control">
+        <%= form.label :murajaahSurah, "Murajaah", class: "label" %>
+        <%= form.collection_select :murajaahSurah, @surahs, :id, :name,
+          { prompt: "Pilih Surat", selected: @murajaahSurah&.id }, class: "select select-bordered w-full" %>
+      </div>
+
+      <div class="form-control">
+        <%# debug(@murajaahSurah) %>
+        <%= debug(@classroom_session.murajaah_id) %>
+        <%= form.label :murajaah_id, "Ayat", class: "label" %>
+        <%= form.select :murajaah_id, @murajaahSurah&.children&.map { |verse| [verse.name, verse.id] },
+          { prompt: "Pilih Ayat", selected: @murajaah }, class: "select select-bordered w-full" %>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Update Data Santri"%>
+  </div>
+  <%= link_to 'Back', edit_sessions_classroom_sessions_path %>
+<% end %>
+
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    console.log("Script loaded");
+
+    const ziyadahSurahs = document.getElementById("classroom_session_ziyadahSurah");
+    console.log("ZiyadahSurahs Found:", ziyadahSurahs.length);
+
+    const murajaahSurahs = document.getElementById("classroom_session_murajaahSurah");
+    console.log("MurajaahSurahs Found:", murajaahSurahs.length);
+
+    const ziyadahVersesSelect = document.getElementById("classroom_session_ziyadah_id");
+    const murajaahVersesSelect = document.getElementById("classroom_session_murajaah_id");
+
+    const attendanceSelect = document.querySelector('select[name="[attendance_status_id]"]')
+    attendanceSelect.addEventListener('change', (event) => {
+        const selectedOption = event.target.options[event.target.selectedIndex].text; // Get the selected option text
+        const isHadir = selectedOption === "Hadir"; // Check if "Hadir" is selected
+        console.log(isHadir);
+        const container = event.target.closest('.collapse-content');
+
+        // Locate the related fields within the same container
+        const parentContainer = event.target.parentElement.parentElement
+        console.log(parentContainer);
+
+        const ziyadahSurah = container.querySelector('[name*="[ziyadahSurah]"]');
+        console.log(ziyadahSurah);
+
+        const ziyadahAyat = container.querySelector('[name*="[ziyadah_id]"]');
+        const murajaahSurah = container.querySelector('[name*="[murajaahSurah]"]');
+        const murajaahAyat = container.querySelector('[name*="[murajaah_id]"]');
+
+        // Toggle disable state for related fields
+        [ziyadahSurah, ziyadahAyat, murajaahSurah, murajaahAyat].forEach(dropdown => {
+
+          if (dropdown) {
+            console.log("Asik");
+            dropdown.disabled = !isHadir;
+          } else {
+            dropdown.disabled = isHadir;
+          }
+
+        });
+      });
+
+    ziyadahSurahs.addEventListener("change", () => {
+      console.log("berhasil");
+
+      const surahId = ziyadahSurahs.value;
+
+      if (!surahId) {
+        ziyadahVersesSelect.innerHTML = '<option value="">Pilih Ayat</option>';
+        return;
+      }
+
+      fetch(`/classroom_sessions/ziyadahVerses_by_surah?surah_id=${surahId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          ziyadahVersesSelect.innerHTML = '<option value="">Pilih Ayat</option>';
+          data.verses.forEach((verse) => {
+            const option = document.createElement("option");
+            option.value = verse.id;
+            option.textContent = verse.name;
+            ziyadahVersesSelect.appendChild(option);
+          });
+        });
+    });
+
+
+
+
+    murajaahSurahs.addEventListener("change", () => {
+      const surahId = murajaahSurahs.value;
+
+      if (!surahId) {
+        murajaahVersesSelect.innerHTML = '<option value="">Pilih Ayat</option>';
+        return;
+      }
+
+      fetch(`/classroom_sessions/murajaahVerses_by_surah?surah_id=${surahId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          murajaahVersesSelect.innerHTML = '<option value="">Pilih Ayat</option>';
+          data.verses.forEach((verse) => {
+            const option = document.createElement("option");
+            option.value = verse.id;
+            option.textContent = verse.name;
+            murajaahVersesSelect.appendChild(option);
+          });
+        });
+    });
+
+  });
+
+</script>

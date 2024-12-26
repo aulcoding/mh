@@ -1,0 +1,36 @@
+<h1 class="text-3xl font-bold text-center text-white mb-6 mt-5">Buat Guru</h1>
+
+<%= form_with(model: @teacher, local: true) do |form| %>
+  <% if @teacher.errors.any? %>
+    <div id="error_explanation" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+      <h2 class="font-bold text-lg"><%= pluralize(@teacher.errors.count, "error") %> prohibited this teacher from being saved:</h2>
+      <ul class="mt-2 list-disc list-inside">
+        <% @teacher.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="w-5/6 mx-auto">
+
+    <!-- Nama -->
+    <div class="form-control w-full max-w-xs mb-4">
+      <%= form.label :name, "Nama", class: "label text-xs" %>
+      <%= form.text_field :name, placeholder: "Masukkan nama guru", class: "input input-bordered w-full text-xs" %>
+    </div>
+
+    <!-- Gender -->
+    <div class="form-control w-full max-w-xs mb-4">
+      <%= form.label :gender_id, "Gender", class: "label text-xs" %>
+      <%= form.collection_select :gender_id, Gender.all, :id, :name, { prompt: "Pilih gender" }, class: "select select-bordered w-full text-xs" %>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="flex justify-center mt-6">
+      <%= form.submit "Simpan", class: "btn btn-primary bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm" %>
+      <%= link_to 'Kembali', teachers_path, class: "btn bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg ml-2 text-sm" %>
+    </div>
+
+  </div>
+<% end %>

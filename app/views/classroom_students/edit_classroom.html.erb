@@ -1,0 +1,112 @@
+<h1>Ini Edit </h1>
+
+
+<%= form_with model: @classroom_student, url: classroom_students_path, local: true do |form| %>
+  <!-- Select Year -->
+  <div>
+    <%= form.label :year %>
+    <%= form.select :year, (2024..2030).to_a %>
+  </div>
+  <!-- Select Semester -->
+  <div>
+    <%= form.label :semester %>
+    <%= form.select :semester, [1, 2], prompt: "Choose semester" %>
+  </div>
+
+  <!-- Select Class -->
+  <div>
+    <%= form.label :classroom_id, "Select Classroom" %>
+    <%= form.collection_select :classroom_id, @classrooms, :id, :name, prompt: "Choose a classroom" %>
+  </div>
+
+
+  <div id="studentsContainer">
+
+  </div>
+<% end %>
+
+
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    console.log("jalan nih bos");
+    const year = document.getElementById("year")
+    const semester = document.getElementById("semester")
+    const classroom = document.getElementById("classroom_id")
+
+    classroom.addEventListener("change", () => {
+      const studentsContainer = document.getElementById("studentsContainer")
+      studentsContainer.innerHTML = "";
+      // console.log(year);
+      const yearValue = year.value
+      // console.log(yearValue);
+      const semesterValue = semester.value
+      // console.log(semesterValue);
+      const classroomValue = classroom.value
+      // console.log(classroomValue);
+
+      fetch(`/classroom_students/students_by_class_year_semester?year=${yearValue}&semester=${semesterValue}&classroom=${classroomValue}`)
+      .then((response) => response.json())
+      .then((data) => {
+        data.forEach(cs => {
+          console.log(data);
+          // Create a container for the row
+          const studentRow = document.createElement("div");
+          studentRow.id = `classroom_student_${cs.id}`;
+          studentRow.className = "flex justify-between items-center border p-2";
+
+          // Add student name
+          const studentName = document.createElement("div");
+          studentName.textContent = `${cs.student.name}`;
+          studentRow.appendChild(studentName);
+
+          // Add an Edit link
+          const studentLinkEdit = document.createElement("a");
+          studentLinkEdit.href = `/classroom_students/${cs.id}/edit`;
+          studentLinkEdit.textContent = "Edit";
+          studentLinkEdit.className = "text-blue-500 underline mr-4";
+          studentRow.appendChild(studentLinkEdit);
+
+          // Add a Delete button
+          const deleteButton = document.createElement("button");
+          deleteButton.textContent = "Delete";
+          deleteButton.className = "bg-red-500 text-white px-2 py-1 rounded";
+          deleteButton.addEventListener("click", () => deleteClassroomStudent(cs.id, studentRow));
+          studentRow.appendChild(deleteButton);
+
+          // Append the row to a container in the HTML
+          document.getElementById("studentsContainer").appendChild(studentRow);
+        });
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+
+      function deleteClassroomStudent(id, rowElement) {
+      if (!confirm("Are you sure you want to delete this student?")) return;
+
+      fetch(`/classroom_students/${id}`, {
+        method: "DELETE",
+        headers: {
+          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            rowElement.remove(); // Remove the row from the DOM
+            alert("Student deleted successfully.");
+          } else {
+            alert("Failed to delete the student.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting student:", error);
+          alert("Something went wrong.");
+        });
+    }
+
+
+
+    })
+
+  })
+</script>

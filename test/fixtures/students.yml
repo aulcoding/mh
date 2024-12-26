@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: students
+#
+#  id         :integer          not null, primary key
+#  name       :string
+#  nickname   :string
+#  gender_id  :integer          not null
+#  birthdate  :date
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+one:
+  name: MyString
+  nickname: MyString
+  gender: one
+  birthdate: 2024-11-20
+
+two:
+  name: MyString
+  nickname: MyString
+  gender: two
+  birthdate: 2024-11-20
