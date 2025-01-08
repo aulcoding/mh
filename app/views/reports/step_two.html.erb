@@ -1,0 +1,39 @@
+<div class="flex flex-col justify-center items-center min-h-screen space-y-4 bg-gray-800 p-4">
+  <div class="p-4 rounded-md w-full max-w-5xl bg-gray-700">
+    <!-- Year and Month -->
+    <div class="text-white text-lg mb-4">
+      <%= debug(@year) %>
+      <p><strong>Year:</strong> <%= @year %></p>
+      <p><strong>Month:</strong> <%= Date::MONTHNAMES[@month.to_i] %></p>
+    </div>
+
+    <!-- Attendance Data Table -->
+    <table class="table-auto w-full bg-gray-800 text-white rounded-md border border-gray-600">
+      <thead>
+        <tr class="bg-gray-600 text-left">
+          <th class="px-4 py-2">Name</th>
+          <th class="px-4 py-2">Surat</th>
+          <th class="px-4 py-2">Ayat</th>
+          <th class="px-4 py-2">Jumlah Sakit</th>
+          <th class="px-4 py-2">Jumlah Izin</th>
+          <th class="px-4 py-2">Jumlah Alpa</th>
+          <th class="px-4 py-2">Jumlah Hadir</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @attendance_data.each do |data| %>
+          <tr>
+            <td class="px-4 py-2"><%= data[:name] %></td>
+            <td class="px-4 py-2"><%= data[:ziyadah_parent] %></td>
+            <td class="px-4 py-2"><%= data[:ziyadah] %></td>
+            <td class="px-4 py-2"><%= data[:total_sakit] %></td>
+            <td class="px-4 py-2"><%= data[:total_izin] %></td>
+            <td class="px-4 py-2"><%= data[:total_alpa] %></td>
+            <td class="px-4 py-2"><%= data[:total_hadir] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+  </div>
+</div>

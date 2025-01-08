@@ -3,6 +3,7 @@ class ClassroomSessionsController < ApplicationController
 
   def index
     @classroom_sessions = ClassroomSession.all
+    @classrooms = Classroom.all
     @classroom_count = Classroom.count
     @student_count = Student.count
     @classroom_students = ClassroomStudent.all
@@ -23,16 +24,24 @@ class ClassroomSessionsController < ApplicationController
     # Query for ClassroomSessions with eager loading
     @classroom_sessions = ClassroomSession.joins(classroom_student: :classroom)
                                           .where(classroom_students: { classroom_id: params[:classroom_id] }, session_date: params[:date])
-                                          .includes(classroom_student: :student)
+                                          .includes(classroom_student: :student, ziyadah: :parent)
 
     # Debugging log
-    puts @classroom_sessions
+    puts @classroom_sessions.inspect
 
     # Render as JSON with nested associations
     render json: @classroom_sessions.as_json(
       include: {
         classroom_student: {
           include: :student
+        },
+        ziyadah: {
+          only: [:id, :name],
+          include: {
+            parent: {
+              only: [:id, :name]
+            }
+          }
         }
       }
     )
@@ -54,13 +63,13 @@ class ClassroomSessionsController < ApplicationController
   def edit
     puts params
     @classroom_session = ClassroomSession.find(params[:id])
-    @ziyadah = Manuscript.find(@classroom_session.ziyadah_id)
-    @murajaah = Manuscript.find(@classroom_session.murajaah_id)
-    @ziyadahSurah = Manuscript.find(@classroom_session.ziyadah&.parent_manuscript_id)
-    @murajaahSurah = Manuscript.find(@classroom_session.murajaah&.parent_manuscript_id)
+    @ziyadah = Manuscript.find_by(id: @classroom_session.ziyadah_id)
+    @murajaah = Manuscript.find_by(id: @classroom_session.murajaah_id)
+    @ziyadahSurah = Manuscript.find_by(id: @ziyadah&.parent_manuscript_id)
+    @murajaahSurah = Manuscript.find_by(id: @murajaah&.parent_manuscript_id)
     puts "lopopo"
-    puts @murajaah.inspect
-    puts @murajaah.parent.inspect
+    # puts @murajaah.inspect
+    # puts @murajaah.parent.inspect
     @attendance_statuses = AttendanceStatus.all
     @surahs = Manuscript.find(6986).children.where.not("name LIKE ?", "Juz%")
     # @murajaahSurahs = Manuscript.find(6986).children.where.not("name LIKE ?", "Juz%")
@@ -275,3 +284,13 @@ class ClassroomSessionsController < ApplicationController
     )
   end
 end
+
+
+# Ku coba gapai apa yang kau ingin /
+# Saat ku terjatuh sakit / kau adalah aspirin
+# Coba menuntunmu agar / ada di dalam track
+# Kau / catatan terindah di dalam teks
+# Dan aku mengerti / apa yang kau mau,
+# hargai dirimu, menjadi imammu
+# Karna kau diciptakan dari tulang rusukku /
+# selain itu karna kau bagian dariku.

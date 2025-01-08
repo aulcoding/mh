@@ -1,33 +1,41 @@
-<h1 class="text-3xl font-bold text-center text-white pt-6 mb-6">Edit Classroom Session</h1>
+<div class="max-w-xs mx-auto px-2 mb-4">
 
-<%= form_with(model: @classroom_session, local: true, class: "w-5/6 max-w-md mx-auto bg-gray-700 py-1 px-4 rounded-lg space-y-2 shadow-md") do |form| %>
-  <!-- Date Field -->
-  <div class="form-control w-full">
-    <%= form.label :session_date, "Tanggal", class: "label text-gray-300 font-medium mb-1" %>
-    <%= form.date_field :session_date, order: [:year, :month, :day], prefix: :session_date,
-          class: "input input-bordered w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+  <h1 class="text-3xl font-bold text-center text-white pt-6 mb-6">Laporan Santri</h1>
+
+  <%= form_with(model: @classroom_session, local: true, class: "mx-auto mb-4 bg-gray-700 pt-1 pb-5 px-4 rounded-lg space-y-2 shadow-md") do |form| %>
+    <!-- Date Field -->
+    <div class="form-control w-full">
+      <%= form.label :session_date, "Tanggal", class: "label text-gray-300 font-medium mb-1" %>
+      <%= form.date_field :session_date, order: [:year, :month, :day], prefix: :session_date,
+            class: "input input-bordered w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+    </div>
+
+    <!-- Classroom Dropdown -->
+    <div class="form-control w-full">
+      <%= form.label :classroom_id, "Kelas", class: "label text-gray-300 font-medium mb-1" %>
+      <%= form.collection_select :classroom_id, @classrooms, :id, :name, { prompt: "Pilih Kelas" },
+            class: "select select-bordered w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+    </div>
+
+    <!-- Submit Button -->
+    <!-- <div class="form-control w-full"> -->
+      <%# form.submit "Update", class: "btn btn-primary w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg" %>
+    <!-- </div> -->
+  <% end %>
+
+  <!-- Student List Section -->
+  <div id="student_list" class="mx-auto bg-gray-700 p-6 rounded-lg mt-6 shadow-md">
+    <h2 class="text-xl font-bold text-gray-300 mb-4">Capaian Terakhir</h2>
+    <div id="students" class="space-y-2">
+      <!-- Dynamically populated student list -->
+    </div>
   </div>
 
-  <!-- Classroom Dropdown -->
-  <div class="form-control w-full">
-    <%= form.label :classroom_id, "Kelas", class: "label text-gray-300 font-medium mb-1" %>
-    <%= form.collection_select :classroom_id, @classrooms, :id, :name, { prompt: "Pilih Kelas" },
-          class: "select select-bordered w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
-  </div>
 
-  <!-- Submit Button -->
-  <!-- <div class="form-control w-full"> -->
-    <%# form.submit "Update", class: "btn btn-primary w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg" %>
-  <!-- </div> -->
-<% end %>
 
-<!-- Student List Section -->
-<div id="student_list" class="w-5/6 max-w-3xl mx-auto bg-gray-700 p-6 rounded-lg mt-6 shadow-md">
-  <h2 class="text-xl font-bold text-gray-300 mb-4">Daftar Capaian</h2>
-  <div id="students" class="space-y-2">
-    <!-- Dynamically populated student list -->
-  </div>
+
 </div>
+
 
 <script>
   document.addEventListener("turbo:load", () => {
@@ -58,8 +66,13 @@
 
           // Populate the student list with the fetched data
           data.forEach((session) => {
+            console.log(session);
+
             const classroomSessionId = session.id; // Classroom session ID
             const student = session.classroom_student.student;
+            const report = session.ziyadah ? session.ziyadah : null;
+            // console.log(report.parent.name);
+
 
             // Create a container for each student
             const studentContainer = document.createElement("div");
@@ -70,6 +83,16 @@
             studentDetails.textContent = `${student.name}`;
             studentDetails.className = "text-gray-300";
 
+            // Ziyadah Surah details
+            const ziyadahDetails = document.createElement("span");
+            ziyadahDetails.textContent = session.ziyadah ? `${session.ziyadah.parent.name}` : '';
+            ziyadahDetails.className = "text-gray-300";
+
+            // Ziyadah Verse details
+            const ziyadahVerseDetails = document.createElement("span");
+            ziyadahVerseDetails.textContent = session.ziyadah ? `${session.ziyadah.name}` : '';
+            ziyadahVerseDetails.className = "text-gray-300";
+
             // Edit link
             const editLink = document.createElement("a");
             editLink.href = `/classroom_sessions/${classroomSessionId}/edit`;
@@ -77,6 +100,8 @@
             editLink.className = "btn btn-sm bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded-lg";
 
             studentContainer.appendChild(studentDetails);
+            studentContainer.appendChild(ziyadahDetails);
+            studentContainer.appendChild(ziyadahVerseDetails);
             studentContainer.appendChild(editLink);
             studentList.appendChild(studentContainer);
           });

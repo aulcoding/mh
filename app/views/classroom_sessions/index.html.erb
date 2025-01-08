@@ -1,6 +1,57 @@
+<div class="max-w-xs mx-auto px-2 mb-4">
+  <h1 class="text-3xl font-bold text-center text-white mb-6 mt-6">Classroom Session</h1>
 
 
-<h1>Berhasil</h1>
+  <div>
+    <%= link_to 'Lihat Laporan Siswa', edit_sessions_classroom_sessions_path, class: "btn w-full bg-slate-100 mb-4 hover:bg-slate-300 text-neutral-700 py-2 px-3 rounded-lg font-semibold" %>
+  </div>
 
-<%= link_to 'Edit Data Laporan Siswa', edit_sessions_classroom_sessions_path %>
-<%= link_to 'Buat Laporan Siswa', step_one_classroom_sessions_path %>
+  <div>
+    <%= link_to 'Buat Laporan Siswa', step_one_classroom_sessions_path, class: "btn w-full bg-slate-100 hover:bg-slate-300 text-neutral-700 py-2 px-3 rounded-lg font-semibold" %>
+  </div>
+
+
+  <%= form_with url: classroom_sessions_path, method: :post, local: true, class: "space-y-4" do |form| %>
+    <div class="form-control w-full max-w-md space-y-4">
+      <div class="form-control w-full">
+        <!-- Year Dropdown -->
+        <%= form.label :year, "Tahun", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.collection_select :year, (2024..2027).to_a, :to_s, :to_s, { prompt: "Pilih Tahun" },
+              { class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+      </div>
+
+      <div class="form-control w-full">
+        <!-- Semester Dropdown -->
+        <%= form.label :semester, "Semester", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.collection_select :semester, [1, 2], :to_s, :to_s, { prompt: "Pilih Semester" },
+              { class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+      </div>
+
+      <!-- Classroom -->
+      <div>
+        <%= form.label :classroom_id, "Kelas", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.collection_select :classroom_id, @classrooms, :id, :name, { prompt: "Pilih Kelas" },
+              class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+
+      <!-- Date -->
+      <div>
+        <%= form.label :session_date, "Tanggal", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.date_field :session_date, { class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <%= form.submit "Buat Lembar Capaian", class: "btn w-full bg-slate-100 hover:bg-slate-300 text-neutral-700 py-2 px-3 rounded-lg font-semibold" %>
+      </div>
+    </div>
+
+  <% end %>
+
+
+
+
+  <!-- Latest Session Classsroom -->
+Student Ziyadah id
+
+</div>

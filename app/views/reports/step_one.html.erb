@@ -1,0 +1,41 @@
+<div class="max-w-xs mx-auto px-2 mb-4">
+  <h1 class="text-3xl font-bold text-center text-white mb-6 mt-6">Laporan Bulanan</h1>
+
+  <%= form_with url: step_one_submit_reports_path, method: :post, local: true, class: "space-y-4" do |form| %>
+    <div class="form-control w-full max-w-md space-y-4">
+      <div class="form-control w-full">
+        <!-- Year Dropdown -->
+        <%= form.label :year, "Tahun", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.collection_select :year, (2024..2027).to_a, :to_s, :to_s, { prompt: "Pilih Tahun" },
+              { class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+      </div>
+
+      <!-- Months -->
+      <div>
+        <%= form.label :month, "Bulan", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= select_tag :month, options_for_select((1..12).map { |m| [Date::MONTHNAMES[m], m] }, selected: params[:month]),
+          class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+
+      <!-- Classroom -->
+      <div>
+        <%= form.label :classroom, "Kelas", class: "block text-sm font-medium text-gray-300 mb-1" %>
+        <%= form.collection_select :classroom, @classrooms, :id, :name, { prompt: "Pilih Kelas" },
+          class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+
+
+      <!-- Submit Button -->
+      <div>
+        <%= form.submit "Lihat Laporan", class: "btn w-full bg-slate-100 hover:bg-slate-300 text-neutral-700 py-2 px-3 rounded-lg font-semibold" %>
+      </div>
+    </div>
+
+  <% end %>
+
+</div>
+<!-- Classroom -->
+
+<!-- Date -->
+
+

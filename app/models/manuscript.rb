@@ -15,3 +15,4 @@ class Manuscript < ApplicationRecord
 
   has_many :classroom_sessions
 end
+

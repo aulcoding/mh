@@ -6,76 +6,85 @@
 <div>
   <!-- Use radio buttons to control collapses -->
 
-  <div class="s">
+  <div class="px4">
 
-    <%# form.hidden_field "classroom_student_id", value: classroom_session.classroom_student_id %>
-    <%# form.hidden_field "teacher_id", value: classroom_session.teacher_id %>
-    <%# form.hidden_field "session_date", value: classroom_session.session_date %>
-    <%# form.hidden_field "year", value: classroom_session.year %>
-    <%# form.hidden_field "semester", value: classroom_session.semester %>
 
     <div class="form-control w-full max-w-xs mb-4">
       <%= form.label :year, "Tahun", class: "label" %>
       <%= form.text_field :year, class: "input input-bordered w-full" %>
-      </div>
-      <div class="form-control w-full max-w-xs mb-4">
-        <%= form.label :semester, "Semester", class: "label" %>
-        <%= form.text_field :semester, class: "input input-bordered w-full" %>
-      </div>
-      <div class="form-control w-full max-w-xs mb-4">
-        <%= form.label :session_date, "Tanggal", class: "label" %>
-        <%= form.date_field :session_date, class: "input input-bordered w-full" %>
+    </div>
+    <div class="form-control w-full max-w-xs mb-4">
+      <%= form.label :semester, "Semester", class: "label" %>
+      <%= form.text_field :semester, class: "input input-bordered w-full" %>
+    </div>
+    <div class="form-control w-full max-w-xs mb-4">
+      <%= form.label :session_date, "Tanggal", class: "label" %>
+      <%= form.date_field :session_date, class: "input input-bordered w-full" %>
+    </div>
+
+    <!-- Attendance Fields -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="form-control">
+        <%= form.label "attendance_status_id", "Attendance Status", class: "label" %>
+        <%= form.collection_select "attendance_status_id", @attendance_statuses, :id, :name,
+        { prompt: "Pilih Kehadiran" }, class: "select select-bordered w-full" %>
       </div>
 
-      <!-- Attendance Fields -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="form-control">
-          <%= form.label "attendance_status_id", "Attendance Status", class: "label" %>
-          <%= form.collection_select "attendance_status_id", @attendance_statuses, :id, :name,
-          { prompt: "Pilih Kehadiran" }, class: "select select-bordered w-full" %>
-        </div>
-
-        <div class="form-control">
-          <%= form.label "attendance_remarks", "Remarks", class: "label" %>
-          <%= form.text_field "attendance_remarks", class: "input input-bordered w-full" %>
-        </div>
+      <div class="form-control">
+        <%= form.label "attendance_remarks", "Remarks", class: "label" %>
+        <%= form.text_field "attendance_remarks", class: "input input-bordered w-full" %>
       </div>
-      <!-- Ziyadah -->
+      </div>
+      <!-- Ziyadah Surah -->
       <div class="form-control">
         <%= form.label :ziyadahSurah, "Ziyadah", class: "label" %>
-        <%= form.collection_select "ziyadahSurah", @surahs, :id, :name,
-          { prompt: "Pilih Surat", selected: @ziyadahSurah&.id }, class: "select select-bordered w-full" %>
+        <%= form.collection_select "ziyadahSurah",
+              @surahs || [], # Fallback to an empty array if @surahs is nil
+              :id,
+              :name,
+              { prompt: "Pilih Surat", selected: @ziyadahSurah&.id },
+              class: "select select-bordered w-full" %>
       </div>
 
-
+      <!-- Ziyadah Ayat -->
       <div class="form-control">
         <%= form.label :ziyadah_id, "Ayat", class: "label" %>
-        <%= form.select :ziyadah_id, @ziyadahSurah&.children&.map { |verse| [verse.name, verse.id] },
-          { prompt: "Pilih Ayat", selected: @ziyadah }, class: "select select-bordered w-full" %>
+        <%= form.select :ziyadah_id,
+              (@ziyadahSurah&.children || []).map { |verse| [verse.name, verse.id] }, # Fallback to empty array if children is nil
+              { prompt: "Pilih Ayat", selected: @ziyadah&.id },
+              class: "select select-bordered w-full" %>
       </div>
 
-      <!-- Murajaah -->
+      <!-- Murajaah Surah -->
       <div class="form-control">
         <%= form.label :murajaahSurah, "Murajaah", class: "label" %>
-        <%= form.collection_select :murajaahSurah, @surahs, :id, :name,
-          { prompt: "Pilih Surat", selected: @murajaahSurah&.id }, class: "select select-bordered w-full" %>
+        <%= form.collection_select :murajaahSurah,
+              @surahs || [], # Fallback to an empty array if @surahs is nil
+              :id,
+              :name,
+              { prompt: "Pilih Surat", selected: @murajaahSurah&.id },
+              class: "select select-bordered w-full" %>
       </div>
 
+      <!-- Murajaah Ayat -->
       <div class="form-control">
-        <%# debug(@murajaahSurah) %>
-        <%= debug(@classroom_session.murajaah_id) %>
         <%= form.label :murajaah_id, "Ayat", class: "label" %>
-        <%= form.select :murajaah_id, @murajaahSurah&.children&.map { |verse| [verse.name, verse.id] },
-          { prompt: "Pilih Ayat", selected: @murajaah }, class: "select select-bordered w-full" %>
+        <%= form.select :murajaah_id,
+              (@murajaahSurah&.children || []).map { |verse| [verse.name, verse.id] }, # Fallback to empty array if children is nil
+              { prompt: "Pilih Ayat", selected: @murajaah&.id },
+              class: "select select-bordered w-full mb-4" %>
       </div>
 
     </div>
   </div>
 
-  <div class="actions">
-    <%= form.submit "Update Data Santri"%>
+  <div class="flex justify-center gap-2 mb-4">
+    <div class="actions">
+      <%= form.submit "Update Data Santri", class: "btn"%>
+    </div>
+    <%= link_to 'Back', edit_sessions_classroom_sessions_path, class: "btn" %>
+
   </div>
-  <%= link_to 'Back', edit_sessions_classroom_sessions_path %>
 <% end %>
 
 
@@ -92,7 +101,7 @@
     const ziyadahVersesSelect = document.getElementById("classroom_session_ziyadah_id");
     const murajaahVersesSelect = document.getElementById("classroom_session_murajaah_id");
 
-    const attendanceSelect = document.querySelector('select[name="[attendance_status_id]"]')
+    const attendanceSelect = document.getElementById("classroom_session_attendance_status_id")
     attendanceSelect.addEventListener('change', (event) => {
         const selectedOption = event.target.options[event.target.selectedIndex].text; // Get the selected option text
         const isHadir = selectedOption === "Hadir"; // Check if "Hadir" is selected

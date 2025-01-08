@@ -10,24 +10,31 @@ Rails.application.routes.draw do
 
   resources :students
   resources :teachers
+  resources :reports do
+    collection do
+      get   :step_one
+      post  :step_one_submit
+      get   :step_two
+    end
+  end
   resources :classroom_sessions do
     collection do
-      get :ziyadahVerses_by_surah
-      get :murajaahVerses_by_surah
-      get :students_by_year_and_semester
-      get :step_one
-      post :step_one_submit
-      get :step_two
-      post :step_two_submit
-      get :edit_sessions
-      get :students_edit
+      get   :ziyadahVerses_by_surah
+      get   :murajaahVerses_by_surah
+      get   :students_by_year_and_semester
+      get   :step_one
+      post  :step_one_submit
+      get   :step_two
+      post  :step_two_submit
+      get   :edit_sessions
+      get   :students_edit
     end
   end
   resources :classroom_students do
     collection do
-      get :students_by_classroom
-      get :edit_classroom
-      get :students_by_class_year_semester
+      get   :students_by_classroom
+      get   :edit_classroom
+      get   :students_by_class_year_semester
     end
   end
 end
