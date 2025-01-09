@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
   resources :students
   resources :teachers
+  resources :classrooms
   resources :reports do
     collection do
       get   :step_one
