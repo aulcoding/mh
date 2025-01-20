@@ -14,6 +14,70 @@ puts "Seeding ..."
 # alquran = Manuscript.find_or_create_by(name: "Al-Qur'an")
 puts "Seeding starts now ..."
 
+
+# Seeding with CSV file
+
+require 'csv'
+
+csv_file_path = Rails.root.join('db', 'teachers.csv')
+
+puts "Seeding teacher from #{csv_file_path}..."
+
+
+# CSV.foreach(csv_file_path, headers: true) do |row|
+#   begin
+#     Student.create!(
+#       name: row['Name'],
+#       nickname: row['Nickname'],
+#       gender_id: row['Gender_id'].to_i
+#     )
+#     puts "Created student: #{row['Name']}"
+#   rescue ActiveRecord::RecordInvalid => e
+#     puts "Failed to create student (#{row['Name']}): #{e.message}"
+#   end
+# end
+
+CSV.foreach(csv_file_path, headers: true) do |row|
+  begin
+    # Create a ClassroomStudent record
+    Teacher.create!(
+      gender_id: row['gender_id'].to_i,
+      name: row['name']
+      )
+   puts "Created Teacher: #{row['Name']}"
+  rescue ActiveRecord::RecordInvalid => e
+    puts "Failed to create record for #{row['name']}: #{e.message}"
+  end
+end
+puts "Seeding completed. Total Teacher: #{Teacher.count}"
+# CSV.foreach(csv_file_path, headers: true) do |row|
+#   begin
+#     # Find the student by name
+#     student = Student.find_by(name: row['name'])
+
+#     if student
+#       # Create a ClassroomStudent record
+#       ClassroomStudent.create!(
+#         student_id: student.id,
+#         year: row['year'].to_i,
+#         semester: row['semester'].to_i,
+#         classroom_id: row['classroom_id'].to_i
+#       )
+#       puts "Created record for #{row['name']}"
+#     else
+#       puts "Student not found: #{row['name']}"
+#     end
+#   rescue ActiveRecord::RecordInvalid => e
+#     puts "Failed to create record for #{row['name']}: #{e.message}"
+#   rescue StandardError => e
+#     puts "An error occurred: #{e.message}"
+#   end
+# end
+
+# puts "Seeding completed. Total Classroom Students: #{ClassroomStudent.count}"
+
+
+
 juz_data = [
   { number: 1, pages: (1..21) },
   { number: 2, pages: (22..41) },
@@ -225,12 +289,12 @@ manuscript_statuses = [
 #   Level.create!(name: level[:name])
 # end
 
-statuses.each do |status|
-  AttendanceStatus.create!(name: status[:name])
-  puts "Berhasil membuat #{status[:name]}"
-end
+# statuses.each do |status|
+#   AttendanceStatus.create!(name: status[:name])
+#   puts "Berhasil membuat #{status[:name]}"
+# end
 # manuscript_statuses.each do |manuscript_status|
 #   ManuscriptStatus.create!(name: manuscript_status[:name])
 #   puts "Berhasil membuat #{manuscript_status[:name]}"
 # end
-puts "Seeding done, Sir."
+# puts "Seeding done, Sir."

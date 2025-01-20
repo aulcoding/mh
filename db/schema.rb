@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_24_141824) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_18_101300) do
   create_table "attendance_statuses", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -23,16 +23,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_24_141824) do
     t.integer "semester"
     t.integer "classroom_student_id", null: false
     t.integer "teacher_id", null: false
-    t.integer "ziyadah_id"
-    t.integer "attendance_status_id", null: false
+    t.integer "ziyadah_start"
+    t.integer "attendance_status_id"
     t.string "attendance_remarks"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "murajaah_id"
+    t.integer "murajaah_start"
+    t.integer "ziyadah_end"
+    t.integer "murajaah_end"
     t.index ["attendance_status_id"], name: "index_classroom_sessions_on_attendance_status_id"
     t.index ["classroom_student_id"], name: "index_classroom_sessions_on_classroom_student_id"
     t.index ["teacher_id"], name: "index_classroom_sessions_on_teacher_id"
-    t.index ["ziyadah_id"], name: "index_classroom_sessions_on_ziyadah_id"
+    t.index ["ziyadah_start"], name: "index_classroom_sessions_on_ziyadah_start"
   end
 
   create_table "classroom_students", force: :cascade do |t|
@@ -101,7 +103,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_24_141824) do
 
   add_foreign_key "classroom_sessions", "attendance_statuses"
   add_foreign_key "classroom_sessions", "classroom_students"
-  add_foreign_key "classroom_sessions", "manuscripts", column: "ziyadah_id"
+  add_foreign_key "classroom_sessions", "manuscripts", column: "ziyadah_start"
   add_foreign_key "classroom_sessions", "teachers"
   add_foreign_key "classroom_students", "classrooms"
   add_foreign_key "classroom_students", "students"

@@ -26,34 +26,60 @@
               </div>
 
               <div class="form-control">
-                <%= form.label "classroom_sessions[#{index}][attendance_remarks]", "Remarks", class: "label" %>
+                <%= form.label "classroom_sessions[#{index}][attendance_remarks]", "Keterangan", class: "label" %>
                 <%= form.text_field "classroom_sessions[#{index}][attendance_remarks]", class: "input input-bordered w-full" %>
               </div>
             </div>
 
-            <!-- Ziyadah -->
+            <!-- Ziyadah Start -->
             <div class="form-control">
-              <%= form.label "classroom_sessions[#{index}][ziyadahSurah]", "Ziyadah", class: "label" %>
-              <%= form.collection_select "classroom_sessions[#{index}][ziyadahSurah]", @surahs, :id, :name,
+              <%= form.label "classroom_sessions[#{index}][ziyadahSurahStart]", "Ziyadah", class: "label" %>
+              <%= form.collection_select "classroom_sessions[#{index}][ziyadahSurahStart]", @surahs, :id, :name,
                 { prompt: "Pilih Surat" }, class: "select select-bordered w-full" %>
             </div>
 
             <div class="form-control">
-              <%= form.label "classroom_sessions[#{index}][ziyadah_id]", "Ayat", class: "label" %>
-              <%= form.select "classroom_sessions[#{index}][ziyadah_id]", [],
+              <%= form.label "classroom_sessions[#{index}][ziyadah_start]", "Ayat", class: "label" %>
+              <%= form.select "classroom_sessions[#{index}][ziyadah_start]", [],
                 { prompt: "Pilih Ayat" }, class: "select select-bordered w-full" %>
             </div>
 
-            <!-- Murajaah -->
+            <!-- Ziyadah End -->
             <div class="form-control">
-              <%= form.label "classroom_sessions[#{index}][murajaahSurah]", "Murajaah", class: "label" %>
-              <%= form.collection_select "classroom_sessions[#{index}][murajaahSurah]", @surahs, :id, :name,
+              <%= form.label "classroom_sessions[#{index}][ziyadahSurahEnd]", "Ziyadah", class: "label" %>
+              <%= form.collection_select "classroom_sessions[#{index}][ziyadahSurahEnd]", @surahs, :id, :name,
                 { prompt: "Pilih Surat" }, class: "select select-bordered w-full" %>
             </div>
 
             <div class="form-control">
-              <%= form.label "classroom_sessions[#{index}][murajaah_id]", "Ayat", class: "label" %>
-              <%= form.select "classroom_sessions[#{index}][murajaah_id]", [],
+              <%= form.label "classroom_sessions[#{index}][ziyadah_end]", "Ayat", class: "label" %>
+              <%= form.select "classroom_sessions[#{index}][ziyadah_end]", [],
+                { prompt: "Pilih Ayat" }, class: "select select-bordered w-full" %>
+            </div>
+
+            <!-- Murajaah Start-->
+            <div class="form-control">
+              <%= form.label "classroom_sessions[#{index}][murajaahSurahStart]", "Murajaah", class: "label" %>
+              <%= form.collection_select "classroom_sessions[#{index}][murajaahSurahStart]", @surahs, :id, :name,
+                { prompt: "Pilih Surat" }, class: "select select-bordered w-full" %>
+            </div>
+
+            <div class="form-control">
+              <%= form.label "classroom_sessions[#{index}][murajaah_start]", "Ayat", class: "label" %>
+              <%= form.select "classroom_sessions[#{index}][murajaah_start]", [],
+                { prompt: "Pilih Ayat" }, class: "select select-bordered w-full" %>
+            </div>
+
+            <!-- Murajaah End-->
+            <div class="form-control">
+              <%= form.label "classroom_sessions[#{index}][murajaahSurahEnd]", "Murajaah", class: "label" %>
+              <%= form.collection_select "classroom_sessions[#{index}][murajaahSurahEnd]", @surahs, :id, :name,
+                { prompt: "Pilih Surat" }, class: "select select-bordered w-full" %>
+            </div>
+
+            <div class="form-control">
+              <%= form.label "classroom_sessions[#{index}][murajaah_end]", "Ayat", class: "label" %>
+              <%= form.select "classroom_sessions[#{index}][murajaah_end]", [],
                 { prompt: "Pilih Ayat" }, class: "select select-bordered w-full" %>
             </div>
 
@@ -75,11 +101,17 @@
   document.addEventListener("turbo:load", () => {
     console.log("Script loaded");
 
-    const ziyadahSurahs = document.querySelectorAll("select[id^='classroom_sessions'][id$='[ziyadahSurah]']");
-    console.log("ZiyadahSurahs Found:", ziyadahSurahs.length);
+    const ziyadahSurahStart = document.querySelectorAll('[id^="classroom_sessions["][id$="[ziyadahSurahStart]"]');
+    console.log("ZiyadahSurahStart Found:", ziyadahSurahStart.length);
 
-    const murajaahSurahs = document.querySelectorAll("select[id^='classroom_sessions'][id$='[murajaahSurah]']");
-    console.log("MurajaahSurahs Found:", murajaahSurahs.length);
+    const ziyadahSurahEnd = document.querySelectorAll("select[id^='classroom_sessions'][id$='[ziyadahSurahEnd]']");
+    console.log("ZiyadahSurahEnd Found:", ziyadahSurahEnd.length);
+
+    const murajaahSurahStart = document.querySelectorAll("select[id^='classroom_sessions'][id$='[murajaahSurahStart]']");
+    console.log("MurajaahSurahStart Found:", murajaahSurahStart.length);
+
+    const murajaahSurahEnd = document.querySelectorAll("select[id^='classroom_sessions'][id$='[murajaahSurahEnd]']");
+    console.log("MurajaahSurahEnd Found:", murajaahSurahEnd.length);
 
     // const attendanceSelect = document.querySelectorAll('select[name*="[attendance_status_id]"]');
     // console.log(attendanceSelect);
@@ -96,15 +128,19 @@
         const parentContainer = event.target.parentElement.parentElement
         console.log(parentContainer);
 
-        const ziyadahSurah = container.querySelector('[name*="[ziyadahSurah]"]');
-        console.log(ziyadahSurah);
+        const ziyadahSurahStart = container.querySelector('[name*="[ziyadahSurahStart]"]');
+        const ziyadah_start = container.querySelector('[name*="[ziyadah_start]"]');
+        const ziyadahSurahEnd = container.querySelector('[name*="[ziyadahSurahEnd]"]');
+        const ziyadah_end = container.querySelector('[name*="[ziyadah_end]"]');
+        console.log(ziyadahSurahStart);
 
-        const ziyadahAyat = container.querySelector('[name*="[ziyadah_id]"]');
-        const murajaahSurah = container.querySelector('[name*="[murajaahSurah]"]');
-        const murajaahAyat = container.querySelector('[name*="[murajaah_id]"]');
+        const murajaahSurahStart = container.querySelector('[name*="[murajaahSurahStart]"]');
+        const murajaah_start = container.querySelector('[name*="[murajaah_start]"]');
+        const murajaahSurahEnd = container.querySelector('[name*="[murajaahSurahEnd]"]');
+        const murajaah_end = container.querySelector('[name*="[murajaah_end]"]');
 
         // Toggle disable state for related fields
-        [ziyadahSurah, ziyadahAyat, murajaahSurah, murajaahAyat].forEach(dropdown => {
+        [ziyadahSurahStart, ziyadah_start, ziyadahSurahEnd, ziyadah_end, murajaahSurahStart, murajaah_start, murajaahSurahEnd, murajaah_end].forEach(dropdown => {
 
           if (dropdown) {
             console.log("Asik");
@@ -116,8 +152,8 @@
       });
     });
 
-    ziyadahSurahs.forEach((ziyadahSurah, index) => {
-      const ziyadahVersesSelect = document.querySelector(`select[id='classroom_sessions[${index}][ziyadah_id]']`);
+    ziyadahSurahStart.forEach((ziyadahSurah, index) => {
+      const ziyadahVersesSelect = document.querySelector(`select[id='classroom_sessions[${index}][ziyadah_start]']`);
 
       ziyadahSurah.addEventListener("change", () => {
         const surahId = ziyadahSurah.value;
@@ -141,8 +177,57 @@
       });
     });
 
-    murajaahSurahs.forEach((murajaahSurah, index) => {
-      const murajaahVersesSelect = document.querySelector(`select[id='classroom_sessions[${index}][murajaah_id]']`);
+    ziyadahSurahEnd.forEach((ziyadahSurah, index) => {
+      const ziyadahVersesSelect = document.querySelector(`select[id='classroom_sessions[${index}][ziyadah_end]']`);
+
+      ziyadahSurah.addEventListener("change", () => {
+        const surahId = ziyadahSurah.value;
+
+        if (!surahId) {
+          ziyadahVersesSelect.innerHTML = '<option value="">Pilih Ayat</option>';
+          return;
+        }
+
+        fetch(`/classroom_sessions/ziyadahVerses_by_surah?surah_id=${surahId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            ziyadahVersesSelect.innerHTML = '<option value="">Pilih Ayat</option>';
+            data.verses.forEach((verse) => {
+              const option = document.createElement("option");
+              option.value = verse.id;
+              option.textContent = verse.name;
+              ziyadahVersesSelect.appendChild(option);
+            });
+          });
+      });
+    });
+
+    murajaahSurahStart.forEach((murajaahSurah, index) => {
+      const murajaahVersesSelect = document.querySelector(`select[id='classroom_sessions[${index}][murajaah_start]']`);
+
+      murajaahSurah.addEventListener("change", () => {
+        const surahId = murajaahSurah.value;
+
+        if (!surahId) {
+          murajaahVersesSelect.innerHTML = '<option value="">Pilih Ayat</option>';
+          return;
+        }
+
+        fetch(`/classroom_sessions/murajaahVerses_by_surah?surah_id=${surahId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            murajaahVersesSelect.innerHTML = '<option value="">Pilih Ayat</option>';
+            data.verses.forEach((verse) => {
+              const option = document.createElement("option");
+              option.value = verse.id;
+              option.textContent = verse.name;
+              murajaahVersesSelect.appendChild(option);
+            });
+          });
+      });
+    });
+    murajaahSurahEnd.forEach((murajaahSurah, index) => {
+      const murajaahVersesSelect = document.querySelector(`select[id='classroom_sessions[${index}][murajaah_end]']`);
 
       murajaahSurah.addEventListener("change", () => {
         const surahId = murajaahSurah.value;

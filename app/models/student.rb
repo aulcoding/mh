@@ -23,7 +23,7 @@ class Student < ApplicationRecord
              format: { without: /\A\d+\z/, message: "Tidak boleh ada angka." },
              length: { minimum: 3, allow_nil: true },
              format: { without: /\s/, message: "Tidak boleh ada spasi." }
-  validate :birthdate_cannot_be_invalid
+  # validate :birthdate_cannot_be_invalid
 
   private
 

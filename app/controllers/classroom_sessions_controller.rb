@@ -63,10 +63,14 @@ class ClassroomSessionsController < ApplicationController
   def edit
     puts params
     @classroom_session = ClassroomSession.find(params[:id])
-    @ziyadah = Manuscript.find_by(id: @classroom_session.ziyadah_id)
-    @murajaah = Manuscript.find_by(id: @classroom_session.murajaah_id)
-    @ziyadahSurah = Manuscript.find_by(id: @ziyadah&.parent_manuscript_id)
-    @murajaahSurah = Manuscript.find_by(id: @murajaah&.parent_manuscript_id)
+    @ziyadah_start = Manuscript.find_by(id: @classroom_session.ziyadah_start)
+    @murajaah_start = Manuscript.find_by(id: @classroom_session.murajaah_start)
+    @ziyadahSurahStart = Manuscript.find_by(id: @ziyadah_start&.parent_manuscript_id)
+    @murajaahSurahStart = Manuscript.find_by(id: @murajaah_start&.parent_manuscript_id)
+    @ziyadah_end = Manuscript.find_by(id: @classroom_session.ziyadah_end)
+    @murajaah_end = Manuscript.find_by(id: @classroom_session.murajaah_end)
+    @ziyadahSurahEnd = Manuscript.find_by(id: @ziyadah_end&.parent_manuscript_id)
+    @murajaahSurahEnd = Manuscript.find_by(id: @murajaah_end&.parent_manuscript_id)
     puts "lopopo"
     # puts @murajaah.inspect
     # puts @murajaah.parent.inspect
@@ -255,8 +259,10 @@ class ClassroomSessionsController < ApplicationController
         :session_date,
         :year,
         :semester,
-        :ziyadah_id,
-        :murajaah_id,
+        :ziyadah_start,
+        :murajaah_start,
+        :ziyadah_end,
+        :murajaah_end,
         :attendance_status_id,
         :attendance_remarks
       )
@@ -277,8 +283,10 @@ class ClassroomSessionsController < ApplicationController
       :session_date,
       :year,
       :semester,
-      :ziyadah_id,
-      :murajaah_id,
+      :ziyadah_start,
+      :murajaah_start,
+      :ziyadah_end,
+      :murajaah_end,
       :attendance_status_id,
       :attendance_remarks
     )

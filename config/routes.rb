@@ -8,6 +8,11 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "homes#index"
 
+  resources  :homes do
+    collection do
+      get :admin
+    end
+  end
   resources :students
   resources :teachers
   resources :classrooms

@@ -1,91 +1,134 @@
-<h1>Update Classroom Session</h1>
+<div class="max-w-xs mx-auto px-2 mb-4">
 
-<%= form_with(model: @classroom_session, local: true) do |form| %>
+  <h1>Update Classroom Session</h1>
 
-<%# debug(@classroom_session) %>
-<div>
-  <!-- Use radio buttons to control collapses -->
+  <%= form_with(model: @classroom_session, local: true) do |form| %>
 
-  <div class="px4">
+  <%# debug(@classroom_session) %>
+  <div>
+    <!-- Use radio buttons to control collapses -->
+
+    <div class="px4">
 
 
-    <div class="form-control w-full max-w-xs mb-4">
-      <%= form.label :year, "Tahun", class: "label" %>
-      <%= form.text_field :year, class: "input input-bordered w-full" %>
+      <div class="form-control w-full max-w-xs mb-4">
+        <%= form.label :year, "Tahun", class: "label" %>
+        <%= form.text_field :year, class: "input input-bordered w-full" %>
+      </div>
+      <div class="form-control w-full max-w-xs mb-4">
+        <%= form.label :semester, "Semester", class: "label" %>
+        <%= form.text_field :semester, class: "input input-bordered w-full" %>
+      </div>
+      <div class="form-control w-full max-w-xs mb-4">
+        <%= form.label :session_date, "Tanggal", class: "label" %>
+        <%= form.date_field :session_date, class: "input input-bordered w-full" %>
+      </div>
+
+      <!-- Attendance Fields -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-control">
+          <%= form.label "attendance_status_id", "Attendance Status", class: "label" %>
+          <%= form.collection_select "attendance_status_id", @attendance_statuses, :id, :name,
+          { prompt: "Pilih Kehadiran" }, class: "select select-bordered w-full" %>
+        </div>
+
+        <div class="form-control">
+          <%= form.label "attendance_remarks", "Keterangan", class: "label" %>
+          <%= form.text_field "attendance_remarks", class: "input input-bordered w-full" %>
+        </div>
+        </div>
+        <!-- Ziyadah Surah Start -->
+        <div class="form-control">
+          <%= form.label :ziyadahSurahStart, "Awal Ziyadah", class: "label" %>
+          <%= form.collection_select "ziyadahSurahStart",
+                @surahs || [], # Fallback to an empty array if @surahs is nil
+                :id,
+                :name,
+                { prompt: "Pilih Surat", selected: @ziyadahSurahStart&.id },
+                class: "select select-bordered w-full" %>
+        </div>
+
+        <!-- Ziyadah Ayat -->
+        <div class="form-control">
+          <%= form.label :ziyadah_start, "Ayat", class: "label" %>
+          <%= form.select :ziyadah_start,
+                (@ziyadahSurahStart&.children || []).map { |verse| [verse.name, verse.id] }, # Fallback to empty array if children is nil
+                { prompt: "Pilih Ayat", selected: @ziyadah_start&.id },
+                class: "select select-bordered w-full" %>
+        </div>
+        <!-- Ziyadah Surah End -->
+        <div class="form-control">
+          <%= form.label :ziyadahSurahEnd, "Akhir Ziyadah", class: "label" %>
+          <%= form.collection_select "ziyadahSurahEnd",
+                @surahs || [], # Fallback to an empty array if @surahs is nil
+                :id,
+                :name,
+                { prompt: "Pilih Surat", selected: @ziyadahSurahEnd&.id },
+                class: "select select-bordered w-full" %>
+        </div>
+
+        <!-- Ziyadah Ayat End -->
+        <div class="form-control">
+          <%= form.label :ziyadah_end, "Ayat", class: "label" %>
+          <%= form.select :ziyadah_end,
+                (@ziyadahSurahEnd&.children || []).map { |verse| [verse.name, verse.id] }, # Fallback to empty array if children is nil
+                { prompt: "Pilih Ayat", selected: @ziyadah_end&.id },
+                class: "select select-bordered w-full" %>
+        </div>
+
+        <!-- Murajaah Surah Start-->
+        <div class="form-control">
+          <%= form.label :murajaahSurahStart, "Awal Murajaah", class: "label" %>
+          <%= form.collection_select :murajaahSurahStart,
+                @surahs || [], # Fallback to an empty array if @surahs is nil
+                :id,
+                :name,
+                { prompt: "Pilih Surat", selected: @murajaahSurahStart&.id },
+                class: "select select-bordered w-full" %>
+        </div>
+
+        <!-- Murajaah Ayat -->
+        <div class="form-control">
+          <%= form.label :murajaah_start, "Ayat", class: "label" %>
+          <%= form.select :murajaah_start,
+                (@murajaahSurahStart&.children || []).map { |verse| [verse.name, verse.id] }, # Fallback to empty array if children is nil
+                { prompt: "Pilih Ayat", selected: @murajaah_start&.id },
+                class: "select select-bordered w-full mb-4" %>
+        </div>
+
+        <!-- Murajaah Surah End-->
+        <div class="form-control">
+          <%= form.label :murajaahSurahEnd, "Akhir Murajaah", class: "label" %>
+          <%= form.collection_select :murajaahSurahEnd,
+                @surahs || [], # Fallback to an empty array if @surahs is nil
+                :id,
+                :name,
+                { prompt: "Pilih Surat", selected: @murajaahSurahEnd&.id },
+                class: "select select-bordered w-full" %>
+        </div>
+
+        <!-- Murajaah Ayat -->
+        <div class="form-control">
+          <%= form.label :murajaah_end, "Ayat", class: "label" %>
+          <%= form.select :murajaah_end,
+                (@murajaahSurahEnd&.children || []).map { |verse| [verse.name, verse.id] }, # Fallback to empty array if children is nil
+                { prompt: "Pilih Ayat", selected: @murajaah_end&.id },
+                class: "select select-bordered w-full mb-4" %>
+        </div>
+
+      </div>
     </div>
-    <div class="form-control w-full max-w-xs mb-4">
-      <%= form.label :semester, "Semester", class: "label" %>
-      <%= form.text_field :semester, class: "input input-bordered w-full" %>
-    </div>
-    <div class="form-control w-full max-w-xs mb-4">
-      <%= form.label :session_date, "Tanggal", class: "label" %>
-      <%= form.date_field :session_date, class: "input input-bordered w-full" %>
-    </div>
 
-    <!-- Attendance Fields -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="form-control">
-        <%= form.label "attendance_status_id", "Attendance Status", class: "label" %>
-        <%= form.collection_select "attendance_status_id", @attendance_statuses, :id, :name,
-        { prompt: "Pilih Kehadiran" }, class: "select select-bordered w-full" %>
+    <div class="flex justify-center gap-2 mb-4">
+      <div class="actions">
+        <%= form.submit "Update Data Santri", class: "btn"%>
       </div>
-
-      <div class="form-control">
-        <%= form.label "attendance_remarks", "Remarks", class: "label" %>
-        <%= form.text_field "attendance_remarks", class: "input input-bordered w-full" %>
-      </div>
-      </div>
-      <!-- Ziyadah Surah -->
-      <div class="form-control">
-        <%= form.label :ziyadahSurah, "Ziyadah", class: "label" %>
-        <%= form.collection_select "ziyadahSurah",
-              @surahs || [], # Fallback to an empty array if @surahs is nil
-              :id,
-              :name,
-              { prompt: "Pilih Surat", selected: @ziyadahSurah&.id },
-              class: "select select-bordered w-full" %>
-      </div>
-
-      <!-- Ziyadah Ayat -->
-      <div class="form-control">
-        <%= form.label :ziyadah_id, "Ayat", class: "label" %>
-        <%= form.select :ziyadah_id,
-              (@ziyadahSurah&.children || []).map { |verse| [verse.name, verse.id] }, # Fallback to empty array if children is nil
-              { prompt: "Pilih Ayat", selected: @ziyadah&.id },
-              class: "select select-bordered w-full" %>
-      </div>
-
-      <!-- Murajaah Surah -->
-      <div class="form-control">
-        <%= form.label :murajaahSurah, "Murajaah", class: "label" %>
-        <%= form.collection_select :murajaahSurah,
-              @surahs || [], # Fallback to an empty array if @surahs is nil
-              :id,
-              :name,
-              { prompt: "Pilih Surat", selected: @murajaahSurah&.id },
-              class: "select select-bordered w-full" %>
-      </div>
-
-      <!-- Murajaah Ayat -->
-      <div class="form-control">
-        <%= form.label :murajaah_id, "Ayat", class: "label" %>
-        <%= form.select :murajaah_id,
-              (@murajaahSurah&.children || []).map { |verse| [verse.name, verse.id] }, # Fallback to empty array if children is nil
-              { prompt: "Pilih Ayat", selected: @murajaah&.id },
-              class: "select select-bordered w-full mb-4" %>
-      </div>
+      <%= link_to 'Back', edit_sessions_classroom_sessions_path, class: "btn" %>
 
     </div>
-  </div>
+  <% end %>
+</div>
 
-  <div class="flex justify-center gap-2 mb-4">
-    <div class="actions">
-      <%= form.submit "Update Data Santri", class: "btn"%>
-    </div>
-    <%= link_to 'Back', edit_sessions_classroom_sessions_path, class: "btn" %>
-
-  </div>
-<% end %>
 
 
 <script>
