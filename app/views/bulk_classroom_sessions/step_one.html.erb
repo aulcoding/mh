@@ -1,0 +1,70 @@
+<div class="flex flex-col justify-center items-center min-h-screen space-y-4 bg-gray-800 p-4">
+  <div class="p-2 rounded-md w-full max-w-xs bg-gray-700">
+    <%= form_with url: bulk_classroom_sessions_path, method: :post, local: true, class: "space-y-4" do |form| %>
+      <div class="form-control w-full max-w-md space-y-4">
+
+        <!-- Year -->
+        <div class="form-control w-full">
+          <%= form.label :year, "Tahun",
+          class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <div class="flex flex-row space-x-2">
+            <%= form.collection_radio_buttons :year, [2025,2026], :to_s, :to_s,
+            { checked: 2025 } do |rb| %>
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <%= rb.radio_button(class: "radio radio-primary") %>
+                <span><%= rb.text %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Semester  -->
+        <div class="form-control w-full">
+          <%= form.label :semester, "Semester",
+          class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <div class="flex flex-row space-x-2">
+            <%= form.collection_radio_buttons :semester, [1, 2], :to_s, :to_s,
+            { checked: 1 } do |rb| %>
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <%= rb.radio_button(class: "radio radio-primary") %>
+                <span><%= rb.text %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Teacher -->
+        <div>
+          <%= form.label :teacher_id, "Pengajar", class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <%= form.collection_select :teacher_id, @teachers, :id, :name, { prompt: "Pilih Pengajar" },
+                class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+        </div>
+
+        <!-- Classroom -->
+
+        <div>
+          <%= form.label :classroom_id, "Kelas", class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <div class="grid grid-cols-2 gap-4">
+            <%= form.collection_radio_buttons :classroom_id, @classrooms, :id, :name do |rb| %>
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <%= rb.radio_button(class: "radio radio-primary") %>
+                <span><%= rb.text %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Date -->
+        <div>
+          <%= form.label :session_date, "Tanggal", class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <%= form.date_field :session_date, { value: Date.today.to_s, class: "w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-2 px-3 focus:ring focus:ring-blue-500 focus:border-blue-500" } %>
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <%= form.submit "Buat Lembar Capaian", class: "btn w-full bg-slate-100 hover:bg-slate-300 text-neutral-700 py-2 px-3 rounded-lg font-semibold" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

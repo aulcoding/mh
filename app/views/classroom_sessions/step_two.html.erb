@@ -33,7 +33,7 @@
 
             <!-- Ziyadah Start -->
             <div class="form-control">
-              <%= form.label "classroom_sessions[#{index}][ziyadahSurahStart]", "Ziyadah", class: "label" %>
+              <%= form.label "classroom_sessions[#{index}][ziyadahSurahStart]", "Awal Ziyadah", class: "label" %>
               <%= form.collection_select "classroom_sessions[#{index}][ziyadahSurahStart]", @surahs, :id, :name,
                 { prompt: "Pilih Surat" }, class: "select select-bordered w-full" %>
             </div>
@@ -46,7 +46,7 @@
 
             <!-- Ziyadah End -->
             <div class="form-control">
-              <%= form.label "classroom_sessions[#{index}][ziyadahSurahEnd]", "Ziyadah", class: "label" %>
+              <%= form.label "classroom_sessions[#{index}][ziyadahSurahEnd]", "Akhir Ziyadah", class: "label" %>
               <%= form.collection_select "classroom_sessions[#{index}][ziyadahSurahEnd]", @surahs, :id, :name,
                 { prompt: "Pilih Surat" }, class: "select select-bordered w-full" %>
             </div>
@@ -59,7 +59,7 @@
 
             <!-- Murajaah Start-->
             <div class="form-control">
-              <%= form.label "classroom_sessions[#{index}][murajaahSurahStart]", "Murajaah", class: "label" %>
+              <%= form.label "classroom_sessions[#{index}][murajaahSurahStart]", "Awal Murajaah", class: "label" %>
               <%= form.collection_select "classroom_sessions[#{index}][murajaahSurahStart]", @surahs, :id, :name,
                 { prompt: "Pilih Surat" }, class: "select select-bordered w-full" %>
             </div>
@@ -72,7 +72,7 @@
 
             <!-- Murajaah End-->
             <div class="form-control">
-              <%= form.label "classroom_sessions[#{index}][murajaahSurahEnd]", "Murajaah", class: "label" %>
+              <%= form.label "classroom_sessions[#{index}][murajaahSurahEnd]", "Akhir Murajaah", class: "label" %>
               <%= form.collection_select "classroom_sessions[#{index}][murajaahSurahEnd]", @surahs, :id, :name,
                 { prompt: "Pilih Surat" }, class: "select select-bordered w-full" %>
             </div>

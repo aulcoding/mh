@@ -8,14 +8,22 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "homes#index"
 
+
+  resource :registration
+  resource :session
+  resource :password
+  resource :password_resets
+
   resources  :homes do
     collection do
       get :admin
     end
   end
+
   resources :students
   resources :teachers
   resources :classrooms
+
   resources :reports do
     collection do
       get   :step_one
@@ -23,6 +31,7 @@ Rails.application.routes.draw do
       get   :step_two
     end
   end
+
   resources :classroom_sessions do
     collection do
       get   :ziyadahVerses_by_surah
@@ -36,6 +45,7 @@ Rails.application.routes.draw do
       get   :students_edit
     end
   end
+
   resources :classroom_students do
     collection do
       get   :students_by_classroom
@@ -43,4 +53,20 @@ Rails.application.routes.draw do
       get   :students_by_class_year_semester
     end
   end
+
+  resources :bulk_classroom_sessions, only: %i[new create]
 end
+
+1
+'1'
+true
+1.0
+x = [1, true, '1']
+y = { true => 1, false => '1', "1" => true}
+
+x[1]
+y[true] = 1
+
+
+y = { :only => [:new, :create] }
+y = { only: [:new, :create] }

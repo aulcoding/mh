@@ -13,4 +13,10 @@
 class ClassroomStudent < ApplicationRecord
   belongs_to :classroom
   belongs_to :student
+
+  class << self
+    def filter_by(params = {})
+      # code filter
+    end
+  end
 end

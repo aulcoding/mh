@@ -76,6 +76,6 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   # ngrok
-  config.hosts << "f48f-2a09-bac5-3a13-18c8-00-278-52.ngrok-free.app"
+  config.hosts << "b193-2001-448a-3020-63e7-ec2b-3833-9acd-fd44.ngrok-free.app"
 
 end

@@ -58,7 +58,8 @@ puts "Seeding completed. Total Teacher: #{Teacher.count}"
 #     if student
 #       # Create a ClassroomStudent record
 #       ClassroomStudent.create!(
-#         student_id: student.id,
+#
+     student_id: student.id,
 #         year: row['year'].to_i,
 #         semester: row['semester'].to_i,
 #         classroom_id: row['classroom_id'].to_i

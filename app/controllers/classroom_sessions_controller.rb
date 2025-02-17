@@ -1,6 +1,80 @@
 class ClassroomSessionsController < ApplicationController
   before_action :set_classroom_session, only: [:update, :edit, :destroy]
 
+  def new
+    if session[:step_one_data].blank?
+      @classrooms = Classroom.order(:name)
+      @teachers = Teacher.order(:name)
+
+      render :step_one
+    else
+      step_one_data = session[:step_one_data]
+      @session_date = step_one_data['session_date']
+      year = step_one_data['year'].to_i
+      semester = step_one_data['semester'].to_i
+      teacher_id = step_one_data['teacher_id'].to_i
+      classroom_id = step_one_data['classroom_id'].to_i
+      session_date = step_one_data['session_date']
+
+      # Fetch students in the selected classroom for the year and semester
+      @classroom_students = ClassroomStudent.where(
+        classroom_id: classroom_id, year: year, semester: semester
+      )
+      @surahs = Manuscript.first.children.where.not("name LIKE ?", "Juz%")
+      @attendance_statuses = AttendanceStatus.all
+      puts "Surahs: #{@surahs.inspect}"
+      @classroom_sessions = @classroom_students.map do |classroom_student|
+        ClassroomSession.new(
+          classroom_student_id: classroom_student.id,
+          teacher_id: teacher_id,
+          session_date: session_date,
+          year: year,
+          semester: semester
+        )
+      end
+
+      render :step_two
+    end
+  end
+
+  def create
+    if session[:step_one_data].blank?
+      session[:step_one_data] = {
+        year: params[:year],
+        semester: params[:semester],
+        teacher_id: params[:teacher_id],
+        classroom_id: params[:classroom_id],
+        session_date: params[:session_date]
+      }
+
+      redirect_to new_classroom_session_path
+    else
+      @classroom_sessions = []
+      error_message = nil
+
+      classroom_session_params.each.with_index do |session_params, index|
+        classroom_session = ClassroomSession.create(session_params)
+
+        # check classroom_session success atau failed
+        # handle error or success
+        unless classroom_session.persisted?
+          error_message = 'Error creating classroom sessions.'
+
+          break
+        end
+
+        @classroom_sessions << classroom_session
+      end
+
+      if error_message.nil?
+        redirect_to classroom_sessions_path, notice: 'Classroom sessions were successfully created.'
+      else
+        render :new, alert: error_message
+        puts "error"
+      end
+    end
+  end
+
   def index
     @classroom_sessions = ClassroomSession.all
     @classrooms = Classroom.all
@@ -21,13 +95,18 @@ class ClassroomSessionsController < ApplicationController
 
 
   def students_edit
+    # pindahkan ke ClassroomStudentsController#index
+
     # Query for ClassroomSessions with eager loading
     @classroom_sessions = ClassroomSession.joins(classroom_student: :classroom)
-                                          .where(classroom_students: { classroom_id: params[:classroom_id] }, session_date: params[:date])
+                                          .where(
+                                            classroom_students: {
+                                            classroom_id: params[:classroom_id]
+                                            },
+                                            session_date: params[:date]
+                                            )
                                           .includes(classroom_student: :student, ziyadah: :parent)
 
-    # Debugging log
-    puts @classroom_sessions.inspect
 
     # Render as JSON with nested associations
     render json: @classroom_sessions.as_json(
@@ -71,15 +150,8 @@ class ClassroomSessionsController < ApplicationController
     @murajaah_end = Manuscript.find_by(id: @classroom_session.murajaah_end)
     @ziyadahSurahEnd = Manuscript.find_by(id: @ziyadah_end&.parent_manuscript_id)
     @murajaahSurahEnd = Manuscript.find_by(id: @murajaah_end&.parent_manuscript_id)
-    puts "lopopo"
-    # puts @murajaah.inspect
-    # puts @murajaah.parent.inspect
     @attendance_statuses = AttendanceStatus.all
-    @surahs = Manuscript.find(6986).children.where.not("name LIKE ?", "Juz%")
-    # @murajaahSurahs = Manuscript.find(6986).children.where.not("name LIKE ?", "Juz%")
-    # @classroom_session = ClassroomSession.find(params[:id])
-    # puts @classroom_session.inspect
-    # puts params[:id]
+    @surahs = Manuscript.first.children.where.not("name LIKE ?", "Juz%")
   end
 
   def update
@@ -97,7 +169,8 @@ class ClassroomSessionsController < ApplicationController
   end
 
   def students_by_year_and_semester
-    puts 'kokok'
+    # pindahin ke ClassroomStudentsController#index dan gunakan method filter_by
+    # dari model
     classroom = params[:classroom_id]
     year = params[:year]
     semester = params[:semester]
@@ -105,17 +178,6 @@ class ClassroomSessionsController < ApplicationController
               .includes(:student)
               .where(classroom_id: classroom, year: year, semester: semester)
               .map(&:student)
-
-    students.each do |student|
-      puts "yeye"
-      puts student.name.class
-    end
-
-    if students
-      puts students.class
-    else
-      print 'kosong'
-    end
 
     render json: { students: students.map { |student| { id: student.id, name: student.name } } }
   end
@@ -126,30 +188,7 @@ class ClassroomSessionsController < ApplicationController
   end
 
   def step_one_submit
-    Rails.logger.info "Params: #{params.inspect}" # Debugging
 
-    # Extract session_date components from the nested hash
-    # session_date_params = params[:session_date]
-
-    # if session_date_params
-    #   begin
-    #     session_date = Date.new(
-    #       session_date_params["session_date(1i)"].to_i,
-    #       session_date_params["session_date(2i)"].to_i,
-    #       session_date_params["session_date(3i)"].to_i
-    #     )
-    #   rescue ArgumentError
-    #     session_date = nil
-    #     Rails.logger.error "Invalid session date: invalid date"
-    #   end
-    # else
-    #   session_date = nil
-    #   Rails.logger.error "Session date params missing!"
-    # end
-
-    # Save the selected attributes in session
-    puts "Ini session"
-    puts session.class
     session[:step_one_data] = {
       year: params[:year],
       semester: params[:semester],
@@ -157,23 +196,14 @@ class ClassroomSessionsController < ApplicationController
       classroom_id: params[:classroom_id],
       session_date: params[:session_date]
     }
-
-
-    puts params[:session_date]
-    Rails.logger.info "Step One Data: #{session[:step_one_data].inspect}" # Debugging
-
     redirect_to step_two_classroom_sessions_path
   end
 
 
 
-  def step_two
-    # Retrieve data from session
+  def step_two # method "new"
     step_one_data = session[:step_one_data]
-    # puts step_one_data.inspect
     @session_date = step_one_data['session_date']
-
-    puts "Step One Data: #{step_one_data.inspect}"
     year = step_one_data['year'].to_i
     semester = step_one_data['semester'].to_i
     teacher_id = step_one_data['teacher_id'].to_i
@@ -181,14 +211,12 @@ class ClassroomSessionsController < ApplicationController
     session_date = step_one_data['session_date']
 
     # Fetch students in the selected classroom for the year and semester
-    @classroom_students = ClassroomStudent.where(classroom_id: classroom_id, year: year, semester: semester)
-
-    puts "Year: #{year}, Semester: #{semester}, Classroom ID: #{classroom_id}" # Check query values
-    puts "Classroom Students Query: #{ClassroomStudent.where(classroom_id: classroom_id, year: year, semester: semester).to_sql}" # Show generated SQL query
-    @surahs = Manuscript.find(6986).children.where.not("name LIKE ?", "Juz%")
+    @classroom_students = ClassroomStudent.where(
+      classroom_id: classroom_id, year: year, semester: semester
+    )
+    @surahs = Manuscript.first.children.where.not("name LIKE ?", "Juz%")
     @attendance_statuses = AttendanceStatus.all
     puts "Surahs: #{@surahs.inspect}"
-    # Prebuild ClassroomSession records for each student
     @classroom_sessions = @classroom_students.map do |classroom_student|
       ClassroomSession.new(
         classroom_student_id: classroom_student.id,
@@ -198,16 +226,10 @@ class ClassroomSessionsController < ApplicationController
         semester: semester
       )
     end
-
-
-
-  puts "Classroom Sessions: #{@classroom_sessions.inspect}"
   end
 
   def ziyadahVerses_by_surah
     verses = Manuscript.find(params[:surah_id]).children
-    puts ",asil"
-    # puts verses
     render json: { verses: verses.select(:id, :name) }
   end
 
@@ -217,27 +239,28 @@ class ClassroomSessionsController < ApplicationController
     render json: { verses: verses.select(:id, :name) }
   end
 
-  def step_two_submit
-   # Debugging output
-    puts "Classroom Sessions Params:"
-    puts params[:classroom_sessions].inspect
+  def step_two_submit # method "create"
     @classroom_sessions = []
+    error_message = nil
 
     classroom_session_params.each.with_index do |session_params, index|
-      puts "ini session_params"
-      puts session_params
-      puts session_params.class
-      puts "Ini index di sumbit two = #{index}"
-      classroom_session = ClassroomSession.create!(session_params)
+      classroom_session = ClassroomSession.create(session_params)
+
+      # check classroom_session success atau failed
+      # handle error or success
+      unless classroom_session.persisted?
+        error_message = 'Error creating classroom sessions.'
+
+        break
+      end
+
       @classroom_sessions << classroom_session
-      puts "hallo"
-      puts @classroom_sessions
     end
 
-    if @classroom_sessions.all?(&:persisted?)
+    if error_message.nil?
       redirect_to classroom_sessions_path, notice: 'Classroom sessions were successfully created.'
     else
-      render :new, alert: 'Error creating classroom sessions.'
+      render :new, alert: error_message
       puts "error"
     end
   end
@@ -247,12 +270,7 @@ class ClassroomSessionsController < ApplicationController
   private
 
   def classroom_session_params
-    puts "Jeroan params"
-    puts params.class
     params.require(:classroom_sessions).to_unsafe_h.map do |_, session_params, index|
-      puts "Ini index di PRIVATE METHOD = #{index}"
-      puts "session params didalam private method"
-      puts session_params
       ActionController::Parameters.new(session_params).permit(
         :classroom_student_id,
         :teacher_id,
@@ -292,13 +310,3 @@ class ClassroomSessionsController < ApplicationController
     )
   end
 end
-
-
-# Ku coba gapai apa yang kau ingin /
-# Saat ku terjatuh sakit / kau adalah aspirin
-# Coba menuntunmu agar / ada di dalam track
-# Kau / catatan terindah di dalam teks
-# Dan aku mengerti / apa yang kau mau,
-# hargai dirimu, menjadi imammu
-# Karna kau diciptakan dari tulang rusukku /
-# selain itu karna kau bagian dariku.
