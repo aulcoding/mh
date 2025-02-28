@@ -60,15 +60,25 @@ class BulkClassroomSessionsController < ApplicationController
   end
 
   def classroom_session_params
-    params.require(:classroom_sessions).map do |_, session_params|
-      session_params.permit(
-        :classroom_student_id, :teacher_id, :session_date,
-        :year, :semester, :attendance_status_id, :attendance_remarks,
-        :ziyadahSurahStart, :ziyadah_start, :ziyadahSurahEnd, :ziyadah_end,
-        :murajaahSurahStart, :murajaah_start, :murajaahSurahEnd, :murajaah_end
+    params.require(:classroom_sessions).to_unsafe_h.map do |_, session_params, index|
+      ActionController::Parameters.new(session_params).permit(
+        :classroom_student_id,
+        :teacher_id,
+        :session_date,
+        :year,
+        :semester,
+        :ziyadah_start,
+        :murajaah_start,
+        :ziyadah_end,
+        :murajaah_end,
+        :attendance_status_id,
+        :attendance_remarks
       )
     end
   end
+
+
+
 
 
   def load_step_two_data
