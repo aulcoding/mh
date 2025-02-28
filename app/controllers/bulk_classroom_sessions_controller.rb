@@ -41,6 +41,16 @@ class BulkClassroomSessionsController < ApplicationController
     end
   end
 
+  def filter_surah
+    juz_number = params[:juz]
+    @surahs = Manuscript.filter_surahs_by_juz(juz_number)
+
+    if @surahs.present?
+      render json: @surahs.select(:id, :name)
+    else
+      render json: []
+    end
+  end
 
   private
 
@@ -60,11 +70,6 @@ class BulkClassroomSessionsController < ApplicationController
     end
   end
 
-  def filter_surah
-    juz_number = params[:juz]
-    Manuscript.filter_surahs_by_juz(juz_number)
-    res
-  end
 
   def load_step_two_data
     step_one_data = session[:step_one_data]

@@ -25,6 +25,12 @@ class ClassroomSession < ApplicationRecord
   belongs_to :murajaah, class_name: 'Manuscript', foreign_key: 'murajaah_start', optional: true
   belongs_to :murajaah, class_name: 'Manuscript', foreign_key: 'murajaah_end', optional: true
   belongs_to :attendance_status, optional: true
+
+  class << self
+    def filter_juz(params = {})
+
+    end
+  end
 end
 
 

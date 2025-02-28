@@ -54,7 +54,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :bulk_classroom_sessions, only: %i[new create]
+  resources :bulk_classroom_sessions, only: %i[new create] do
+    collection do
+      get   :filter_surah
+
+    end
+  end
 end
 
 1
