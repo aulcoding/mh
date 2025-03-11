@@ -57,7 +57,7 @@ Rails.application.routes.draw do
   resources :bulk_classroom_sessions, only: %i[new create] do
     collection do
       get   :filter_surah
-
+      delete :destroy_session
     end
   end
 end

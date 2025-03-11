@@ -1,8 +1,9 @@
 <!-- <div class="bg-gray-50 min-h-screen"> -->
   <div class="max-w-4xl mx-auto bg-teal-50 shadow-lg rounded-lg p-8">
-    <h2 class="text-2xl font-bold mb-6 text-lg text-center text-slate-500">Lembar Capaian <%= @session_date %></h2>
-
-
+    <div class="flex items-center gap-2">
+      <%= link_to "Delete Sessions", destroy_session_bulk_classroom_sessions_path, data: { turbo_method: :delete }, class: "btn btn-danger" %>
+      <h2 class="text-2xl font-bold text-slate-500">Lembar Capaian <%= @session_date %></h2>
+    </div>
 
       <%= form_with url: bulk_classroom_sessions_path, method: :post, local: true, class: "space-y-6" do |form| %>
 
@@ -25,11 +26,6 @@
 
               <!-- Attendance Fields -->
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- <div class="form-control"> -->
-                  <%# form.label "classroom_sessions[#{index}][attendance_status_id]", "Attendance Status", class: "label" %>
-                  <%# form.collection_select "classroom_sessions[#{index}][attendance_status_id]", @attendance_statuses, :id, :name,
-                  { prompt: "Pilih Kehadiran" }, class: "select select-bordered w-full" %>
-                <!-- </div> -->
 
 
                 <div class="form-control">
@@ -174,9 +170,9 @@
     const ziyadahSurahsEnd = document.querySelectorAll("select[id^='classroom_sessions'][id$='[ziyadahSurahEnd]']");
     const murajaahSurahsStart = document.querySelectorAll("select[id^='classroom_sessions'][id$='[murajaahSurahStart]']");
     const murajaahSurahsEnd = document.querySelectorAll("select[id^='classroom_sessions'][id$='[murajaahSurahEnd]']");
-    const juzZiyadahAll = document.querySelectorAll('input[type="radio"][name*="juz_ziyadah"]')
-    const juzMurajaahAll = document.querySelectorAll('input[type="radio"][name*="juz_murajaah"]')
-
+    const juzZiyadahAll = document.querySelectorAll('input[type="radio"][name*="juz_ziyadah"]');
+    const juzMurajaahAll = document.querySelectorAll('input[type="radio"][name*="juz_murajaah"]');
+    const attendancesSelect = document.querySelectorAll('input[type="radio"][name*="[attendance_status_id]"]');
     // Juz Ziyadah goes here
 
     juzZiyadahAll.forEach(juzZiyadah => {
@@ -280,7 +276,7 @@
 
     // Attendance Status goes here
     // Add event listeners to each select element
-    document.querySelectorAll('input[type="radio"][name*="[attendance_status_id]"]').forEach(attendanceSelect => {
+    attendancesSelect.forEach(attendanceSelect => {
       attendanceSelect.addEventListener('change', (event) => {
 
         const selectedOption = event.target.nextElementSibling.textContent; // Get the selected option text

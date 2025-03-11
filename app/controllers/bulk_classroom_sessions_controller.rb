@@ -52,6 +52,11 @@ class BulkClassroomSessionsController < ApplicationController
     end
   end
 
+  def destroy_session
+    session.delete(:step_one_data)
+    redirect_to new_bulk_classroom_session_path
+  end
+
   private
 
   def step_one_params
