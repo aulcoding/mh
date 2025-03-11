@@ -4,5 +4,8 @@
 
 import { application } from "./application"
 
+import FilterSurahController from "./filter_surah_controller"
+application.register("filter-surah", FilterSurahController)
+
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)

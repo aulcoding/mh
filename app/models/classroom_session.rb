@@ -26,6 +26,8 @@ class ClassroomSession < ApplicationRecord
   belongs_to :murajaah, class_name: 'Manuscript', foreign_key: 'murajaah_end', optional: true
   belongs_to :attendance_status, optional: true
 
+  # Validation attendance
+
   class << self
     def filter_juz(params = {})
 

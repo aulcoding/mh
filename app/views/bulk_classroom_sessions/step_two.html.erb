@@ -1,5 +1,5 @@
 <!-- <div class="bg-gray-50 min-h-screen"> -->
-  <div class="max-w-4xl mx-auto bg-teal-50 shadow-lg rounded-lg p-8">
+  <div class="max-w-4xl mx-auto bg-teal-50 shadow-lg rounded-lg p-8" data-controller="filter-surah">
     <div class="flex items-center gap-2">
       <%= link_to "Delete Sessions", destroy_session_bulk_classroom_sessions_path, data: { turbo_method: :delete }, class: "btn btn-danger" %>
       <h2 class="text-2xl font-bold text-slate-500">Lembar Capaian <%= @session_date %></h2>
@@ -61,7 +61,7 @@
                       "Juz 30", "Juz 29", "Juz 28", "Juz 27", "Juz 26", "Juz lainnya"
                       ], :to_s, :to_s do |rb| %>
                       <label class="inline-flex items-center space-x-2 cursor-pointer text-xs">
-                        <%= rb.radio_button(class: "radio radio-primary radio-xs") %>
+                        <%= rb.radio_button(class: "radio radio-primary radio-xs", data: { action: "change->filter-surah#updateSurahOptions" }) %>
                         <span><%= rb.text %></span>
                       </label>
                     <% end %>
@@ -175,7 +175,7 @@
     const attendancesSelect = document.querySelectorAll('input[type="radio"][name*="[attendance_status_id]"]');
     // Juz Ziyadah goes here
 
-    juzZiyadahAll.forEach(juzZiyadah => {
+    <%# juzZiyadahAll.forEach(juzZiyadah => {
       juzZiyadah.addEventListener("change", function () {
         const selectedJuz = this.value;
         console.log(selectedJuz);
@@ -271,7 +271,7 @@
           })
           .catch((error) => console.error("Error fetching surahs:", error));
       });
-    })
+    }) %>
 
 
     // Attendance Status goes here
